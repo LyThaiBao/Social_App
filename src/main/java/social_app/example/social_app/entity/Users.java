@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -25,9 +27,13 @@ public class Users {
     private String password;
     @Column(name = "enable")
     private boolean enable;
+    @CreationTimestamp
     @Column(name = "create_at")
-    private Instant createAt;
+    private Instant createdAt;
 
     @OneToOne(mappedBy = "user")
     private Members member;
+
+    @OneToMany(mappedBy = "user",fetch =FetchType.EAGER)
+    private List<UserRoles> userRoles;
 }
