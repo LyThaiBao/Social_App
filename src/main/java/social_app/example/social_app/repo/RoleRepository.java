@@ -2,11 +2,11 @@ package social_app.example.social_app.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import social_app.example.social_app.entity.Members;
+import social_app.example.social_app.entity.Roles;
 
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Members, Integer> {
-    Optional<Members> getMemberByFullName(String fullName);
+public interface RoleRepository extends JpaRepository<Roles,Integer> {
+    public Optional<Roles> findByRoleName(String roleName);
 }

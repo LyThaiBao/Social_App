@@ -6,6 +6,6 @@ import social_app.example.social_app.dto.RegisterDTO;
 import social_app.example.social_app.dto.UserResponse;
 
 public interface AuthService {
-    public UserResponse register(RegisterDTO registerInFo);
-    public LoginResponse login(LoginRequest request);
+     UserResponse register(RegisterDTO registerInFo);
+     LoginResponse login(LoginRequest request);
 }

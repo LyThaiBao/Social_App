@@ -8,8 +8,8 @@ import java.sql.Date;
 
 @Component
 public class JwtUtil {
-    private String SECRET_KEY = "lythaibaotimy@sfsfjfjsjfksdjfkdsfksdjfkdjfkdsjfksjfwerrerfsdfsdf";
-    private long JwtExpiration= 1000*60;
+    private String SECRET_KEY = "lythaibaotimyssfsfjfjsjfksdjfkdsfksdjfkdjfkdsjfksjfwerrerfsdfsdf";
+    private long JwtExpiration= 1000*60*10;
     public String createToken(String username){
         return Jwts.builder()
                 .setSubject(username)

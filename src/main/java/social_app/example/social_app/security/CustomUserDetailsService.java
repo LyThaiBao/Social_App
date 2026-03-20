@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
           String roleName = userRoles.getRole().getRoleName();
           return  new SimpleGrantedAuthority(roleName);
         }).toList();
+        System.out.println("Load Role>>> " +authorities);
         return User.withUsername(users.getUsername())
                 .password(users.getPassword())
                 .authorities(authorities)

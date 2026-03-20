@@ -25,9 +25,12 @@ public class Security {
         httpSecurity.csrf(csrf->csrf.disable())
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(configure->{
-                   configure.requestMatchers("/api/auth/**").permitAll();
-//                           .requestMatchers(HttpMethod.GET,"/api/post").hasAnyRole("USER");
-                });
+                   configure.requestMatchers("/api/auth/**").permitAll()
+                           .requestMatchers("/ws/**").permitAll()
+                           .requestMatchers(HttpMethod.POST,"/api/friendships/**").authenticated();
+                })
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
+        ;
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
     return httpSecurity.build();

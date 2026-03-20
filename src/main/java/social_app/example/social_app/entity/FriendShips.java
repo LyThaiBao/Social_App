@@ -26,8 +26,9 @@ public class FriendShips {
     @JoinColumn(name = "addresser_id")
     private Members addresser;
 
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status",length = 15,nullable = false)
+    private FriendShipType status;
 
     @CreationTimestamp
     @Column(name = "create_at",nullable = false)

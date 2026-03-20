@@ -11,9 +11,5 @@ import social_app.example.social_app.service.UserService;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    @PostMapping({"/",""})
-    public ResponseEntity<Users> createUser(@RequestBody Users users){
-        Users usersDb = this.userService.createUser(users);
-        return ResponseEntity.ok(usersDb);
-    }
+
 }

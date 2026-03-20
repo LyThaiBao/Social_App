@@ -1,10 +1,7 @@
 package social_app.example.social_app.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
@@ -31,6 +28,7 @@ public class Users {
     @Column(name = "create_at")
     private Instant createdAt;
 
+    @ToString.Exclude
     @OneToOne(mappedBy = "user")
     private Members member;
 

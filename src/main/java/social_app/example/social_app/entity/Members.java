@@ -1,10 +1,8 @@
     package social_app.example.social_app.entity;
 
     import jakarta.persistence.*;
-    import lombok.AllArgsConstructor;
-    import lombok.Builder;
-    import lombok.Data;
-    import lombok.NoArgsConstructor;
+    import lombok.*;
+
     import java.time.LocalDate;
 
     @Entity
@@ -24,6 +22,7 @@
         @Column(name = "birthday")
         private LocalDate birthDay;
 
+        @ToString.Exclude
         @OneToOne
         @JoinColumn(name = "user_id",unique = true)
         private Users user;
