@@ -13,7 +13,6 @@ import java.time.Instant;
 
 public class FriendShipResponse {
     private String statusText;
-    private Integer status;
     @CreationTimestamp
     private Instant createdAt;
 

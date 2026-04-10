@@ -30,7 +30,7 @@ public class FriendShips {
     @Column(name = "status",length = 15,nullable = false)
     private FriendShipType status;
 
-    @CreationTimestamp
+    @CreationTimestamp // auto generate
     @Column(name = "create_at",nullable = false)
     private Instant createAt;
 }

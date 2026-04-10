@@ -5,6 +5,6 @@ public enum MessageType {
     IMAGE,
     VIDEO,
     FILE,
-    NOTIFICATION,// use for notification like: member A just left group
-    RECALLED // use for recall feature
+    NOTIFICATION,// use for notification like: member A just left group (content == null)
+    RECALLED // use for recall feature (content == null)
 }

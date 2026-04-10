@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import social_app.example.social_app.entity.Users;
+import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.repo.UserRepository;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users users = this.userRepository.findByUsername(username).orElseThrow(()->new RuntimeException("Not found User"));
+        Users users = this.userRepository.findByUsername(username).orElseThrow(()->new NotFoundResource("Not found user"));
         List<SimpleGrantedAuthority> authorities = users.getUserRoles().stream().map(userRoles -> {
           String roleName = userRoles.getRole().getRoleName();
           return  new SimpleGrantedAuthority(roleName);

@@ -24,7 +24,6 @@ public class FriendShipController {
         FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId());
         boolean isSuccess = result.getStatus() == 2000;
         ApiResponse<FriendShipResponse> response = ApiResponse.<FriendShipResponse>builder()
-                .status(isSuccess?2000:4000)
                 .message(isSuccess?"Send Successful":"Send Failed")
                 .body(result)
                 .build();
@@ -37,7 +36,6 @@ public class FriendShipController {
         FriendShipResponse result = this.friendShipService.accept(request.getAddresserId(),request.getRequesterId());
         boolean isSuccess = result.getStatus() == 2000;
         ApiResponse<FriendShipResponse> response = ApiResponse.<FriendShipResponse>builder()
-                .status(isSuccess?2000:4000)
                 .message(isSuccess?"Accept Successful":"Accept Failed")
                 .body(result)
                 .build();
@@ -52,7 +50,6 @@ public class FriendShipController {
         FriendShipResponse result = this.friendShipService.denied(request.getAddresserId(),request.getRequesterId());
         boolean isSuccess = result.getStatus() == 2000;
         ApiResponse<FriendShipResponse> response = ApiResponse.<FriendShipResponse>builder()
-                .status(isSuccess?2000:4000)
                 .message(isSuccess?"Denied Successful":"Denied Failed")
                 .body(result)
                 .build();

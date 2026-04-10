@@ -24,7 +24,6 @@ public class AuthController {
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>
                 builder()
                 .message("Create Successful")
-                .status(1000)
                 .body(userResponse)
                 .build();
         URI location = ServletUriComponentsBuilder

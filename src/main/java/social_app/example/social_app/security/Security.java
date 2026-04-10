@@ -29,6 +29,7 @@ public class Security {
                            .requestMatchers("/ws/**").permitAll()
                            .requestMatchers(HttpMethod.POST,"/api/friendships/**").authenticated();
                 })
+                // use JwtAuthenticationEntryPoint to handle exception outside
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))
         ;
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
