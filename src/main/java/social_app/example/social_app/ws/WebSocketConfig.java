@@ -15,7 +15,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 // Cho phép các domain khác nhau kết nối (CORS)
                 .setAllowedOriginPatterns("*")
-                .withSockJS();// Phương án dự phòng nếu trình duyệt không hỗ trợ WebSocket
+//              WebSocket — protocol chuẩn, trình duyệt hiện đại đều hỗ trợ
+//                  SockJS — thư viện wrapper bọc ngoài WebSocket, nếu trình duyệt không hỗ trợ WebSocket thì
+//              SockJS tự động fallback xuống HTTP long-polling
+
+               .withSockJS();// Phương án dự phòng nếu trình duyệt không hỗ trợ WebSocket
                 // nó sẽ dùng bản socket nhưng thấp hơn các trình duyệt đa số điều hiểu
     }
 

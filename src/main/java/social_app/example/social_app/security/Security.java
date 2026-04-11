@@ -26,7 +26,7 @@ public class Security {
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(configure->{
                    configure.requestMatchers("/api/auth/**").permitAll()
-                           .requestMatchers("/ws/**").permitAll()
+                           .requestMatchers("/ws/**","/ws/info/**").permitAll()
                            .requestMatchers(HttpMethod.POST,"/api/friendships/**").authenticated();
                 })
                 // use JwtAuthenticationEntryPoint to handle exception outside

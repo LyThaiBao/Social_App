@@ -9,8 +9,12 @@ import org.springframework.stereotype.Controller;
 import social_app.example.social_app.dto.ChatMessage;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
+import social_app.example.social_app.entity.Users;
+import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.repo.MessageRepository;
 import social_app.example.social_app.service.ChatService;
+import social_app.example.social_app.service.MemberService;
+import social_app.example.social_app.service.UserService;
 
 import java.security.Principal;
 
@@ -21,22 +25,33 @@ public class ChatController {
 
 private final SimpMessagingTemplate messagingTemplate;
 private final ChatService chatService;
+private final MemberService memberService;
+private final UserService userService;
 /*
  * Gửi tin nhắn cá nhân (1-1)
  * Client gửi đến: /app/chat.private
 */
     @MessageMapping("/chat.private") // chat 1;1
-    public void processPrivateMessage(@Payload ChatMessage chatMessage){
-        log.info("Message >>"+chatMessage);
-        //FE ko dc gui sender len vi co the gia mao admin,=> dung principal
-    // 1. Lưu tin nhắn vào DB thông qua Service
+    public void processPrivateMessage(@Payload ChatMessage chatMessage,Principal principal){ // principal lay thong tin user dang login
+        //------------GET Principal-------------
+        if(principal == null){
+            throw new AuthException("Unauthenticated");
+        }
+        String senderName = principal.getName();
+        Users sender = this.userService.findByUsername(senderName);
+        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
+
+        //BE ko tin sender FE gui len vi co the gia mao admin,=> dung principal
+        // Bcs login by User so Principal save user info
+        String destinationUser = this.chatService.getUsernameDest(chatMessage);
+
+        // 1. Lưu tin nhắn vào DB thông qua Service
         Messages messageSaved = this.chatService.handlePrivateMessage(chatMessage);
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
-        //FORM ==> convertAndSendToUser(recipientId,"destination/**",payload)
-        this.messagingTemplate.convertAndSendToUser("Phuc Bao","/queue/private",chatMessage);
+        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageSaved);
         // 3. Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
-//        this.messagingTemplate.convertAndSendToUser(chatMessage.getSenderId(),"/queue/private",chatMessage);
+        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageSaved);
     }
 
     

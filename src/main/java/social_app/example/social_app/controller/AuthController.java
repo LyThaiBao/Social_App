@@ -1,6 +1,7 @@
 package social_app.example.social_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import social_app.example.social_app.dto.*;
 import social_app.example.social_app.service.AuthService;
 
 import java.net.URI;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -21,24 +23,19 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<UserResponse>> register(@RequestBody RegisterDTO registerInFo){
         UserResponse userResponse = this.authService.register(registerInFo);
-        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>
-                builder()
-                .message("Create Successful")
-                .body(userResponse)
-                .build();
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()// Lấy path hiện tại (ví dụ /api/auth)
                 .path("/{username}") // tao them đuôi
                 .buildAndExpand(userResponse.getUsername())// truyền value cho đuôi
                 .toUri();
-        return ResponseEntity.created(location).body(apiResponse);
+        return ResponseEntity.created(location).body(ApiResponse.success("Create Successful",userResponse));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest){
         System.out.println("Login>>>"+loginRequest);
         LoginResponse response = this.authService.login(loginRequest);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Login Success",response));
     }
 
 }

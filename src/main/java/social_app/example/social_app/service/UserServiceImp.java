@@ -21,8 +21,8 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public Optional<Users> findByUserId(Integer userId) {
-        return this.userRepository.findById(userId);
+    public Users findByUserId(Integer userId) {
+        return this.userRepository.findById(userId).orElseThrow(()-> new NotFoundResource("Not found member"));
     }
 
     @Override

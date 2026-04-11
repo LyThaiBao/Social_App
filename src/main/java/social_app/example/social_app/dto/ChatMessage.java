@@ -17,8 +17,8 @@ public class ChatMessage {
         CHAT,JOIN,LEAVE
     }
     private String content;
-    private String senderId;
-    private String recipientId;
+    private Integer senderId;
+    private Integer recipientId;
     private Integer conversationId;
     private ChatType type;
     private MessageType messageType;

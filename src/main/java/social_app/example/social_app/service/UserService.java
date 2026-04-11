@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface UserService {
     Users findByUsername(String username);
-    Optional<Users> findByUserId(Integer userId);
+    Users findByUserId(Integer userId);
     boolean isExistName(String username);
     Users createUser(RegisterDTO registerInfo);
 }
