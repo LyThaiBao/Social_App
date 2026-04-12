@@ -5,6 +5,7 @@ import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 
 public interface ChatService {
-    Messages handlePrivateMessage(ChatMessage chatMessage);
+    Messages saveMessage(ChatMessage chatMessage);
     String getUsernameDest(ChatMessage chatMessage);
+//    Members leaveGroup()
 }

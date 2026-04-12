@@ -16,9 +16,8 @@ public class ChatServiceImp implements ChatService{
     private final MessageService messageService;
     private final UserService userService;
     @Override
-    public Messages handlePrivateMessage(ChatMessage chatMessage) {
+    public Messages saveMessage(ChatMessage chatMessage) {
         System.out.println("Sender >>> "+chatMessage.getSenderId());
-//      Members sender = this.memberService.getMemberByFullName(chatMessage.getSenderId()).orElseThrow(()->new RuntimeException("Not found sender"));
         Members sender = this.memberService.getMemberById(chatMessage.getSenderId());
         Conversations conversation = this.conversationService.getConversationById(chatMessage.getConversationId());
         Messages message = Messages

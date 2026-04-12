@@ -11,4 +11,5 @@ public interface MemberService {
     Members getMemberById(Integer id);
     public Optional<Members> getMemberByFullName(String fullName);
     Members createMember(Users userSaved, RegisterDTO registerInfo);
+
 }
