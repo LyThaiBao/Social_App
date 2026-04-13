@@ -15,6 +15,7 @@ import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.repo.MessageRepository;
 import social_app.example.social_app.service.ChatService;
 import social_app.example.social_app.service.MemberService;
+import social_app.example.social_app.service.ParticipantService;
 import social_app.example.social_app.service.UserService;
 
 import java.security.Principal;
@@ -25,6 +26,7 @@ import java.security.Principal;
 public class ChatController {
 
 private final SimpMessagingTemplate messagingTemplate;
+private final ParticipantService participantService;
 private final ChatService chatService;
 private final UserService userService;
 /*
@@ -90,7 +92,7 @@ private final UserService userService;
             throw new AuthException("Unauthenticated");
         }
         String senderName = principal.getName();
-
+        this.participantService.deleteParticipantById(groupId,principal);
         String destination = "/topic/leave." + groupId;//FE sub ==> /topic/group.groupId
         this.messagingTemplate.convertAndSend(destination,senderName);
     }

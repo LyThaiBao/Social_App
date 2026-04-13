@@ -12,6 +12,8 @@ import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.repo.ParticipantRepository;
 
+import java.security.Principal;
+
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +27,6 @@ public class ParticipantServiceImp implements ParticipantService{
         if(request.getPrincipal() == null){
             throw  new AuthException("Unauthenticated");
         }
-
-
-
         Conversations conversation = this.conversationService.getConversationById(request.getConversationId());
         //---------Check Exactly Who was request, afraid fake info------------
         String username = request.getPrincipal().getName();
@@ -45,9 +44,10 @@ public class ParticipantServiceImp implements ParticipantService{
     }
 
     @Override
-    public ParticipantResponse deleteParticipantById(Integer conversationId,Integer memberId) {
-        Participants participant = this.participantRepository.findByMemberIdAndConversationId(memberId,conversationId).orElseThrow(()-> new NotFoundResource("Not found participant"));
-
+    public ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal) {
+        String username = principal.getName();
+        Users user = this.userService.findByUsername(username);
+        Participants participant = this.participantRepository.findByMemberIdAndConversationId(user.getMember().getId(),conversationId).orElseThrow(()-> new NotFoundResource("Not found participant"));
         this.participantRepository.delete(participant);
         return ParticipantResponse.builder()
                 .memberId(participant.getMember().getId())

@@ -57,6 +57,8 @@ public class AuthServiceImp implements AuthService{
             return LoginResponse
                     .builder()
                     .accessToken(accessToken)
+                    .fullName(users.getMember().getFullName())
+                    .role("member") // auto member, admin just only create direct by DB
                     .build();
 
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
