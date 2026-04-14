@@ -3,12 +3,17 @@ package social_app.example.social_app.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import social_app.example.social_app.dto.MemberDetailResponse;
+import social_app.example.social_app.dto.MemberResponse;
 import social_app.example.social_app.dto.RegisterDTO;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.NotFoundResource;
+import social_app.example.social_app.mapper.MemberMapper;
 import social_app.example.social_app.repo.MemberRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImp implements MemberService{
     private final MemberRepository memberRepository;
-
+    private final MemberMapper memberMapper;
     @Override
     public boolean isExist(Integer id) {
         Optional<Members> member = this.memberRepository.findById(id);
@@ -26,7 +31,6 @@ public class MemberServiceImp implements MemberService{
     @Override
     public Members getMemberById(Integer id) {
         return this.memberRepository.findById(id).orElseThrow(()-> new NotFoundResource("Not found user"));
-
     }
 
     @Override
@@ -44,5 +48,29 @@ public class MemberServiceImp implements MemberService{
                 .build();
         this.memberRepository.save(member);
         return member;
+    }
+
+    @Override
+    public MemberDetailResponse getMemberDetail(Integer id) {
+        Members member = this.getMemberById(id);
+        return  this.memberMapper.convertToMemberDetail(member);
+    }
+
+
+    @Override
+    public List<MemberResponse> search(String keyword) {
+        System.out.println(">>> KEY WORD: "+keyword);
+        List<MemberResponse> memberResponseList = new ArrayList<>() ;
+
+//        String keyClean = keyword.contains("@") ? keyword.substring(1):keyword;
+        if(keyword.contains("@")){
+            String keyClean =  keyword.substring(1);
+            memberResponseList=  this.memberRepository.getByUserUsername(keyClean).stream().map(this.memberMapper::convertToMemberResponse).toList();
+        }
+        else{
+            memberResponseList= this.memberRepository.getByFullName(keyword).stream().map(this.memberMapper::convertToMemberResponse).toList();
+
+        }
+        return memberResponseList;
     }
 }

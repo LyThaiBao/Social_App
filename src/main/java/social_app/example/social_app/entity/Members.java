@@ -2,7 +2,9 @@
 
     import jakarta.persistence.*;
     import lombok.*;
+    import org.hibernate.annotations.CreationTimestamp;
 
+    import java.time.Instant;
     import java.time.LocalDate;
 
     @Entity
@@ -26,4 +28,8 @@
         @OneToOne
         @JoinColumn(name = "user_id",unique = true)
         private Users user;
+
+        @CreationTimestamp
+        @Column(name = "create_at",nullable = false)
+        private Instant createAt;
     }

@@ -15,7 +15,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         // Viết thủ công JSON theo format
-        String jsonResponse = "{\"message:\"Unauthorized,\"body:\"Vui Long Dang Nhap }";
+        String jsonResponse = "{\"message\":\"Unauthorized\",\"body\":\"Vui Long Dang Nhap Lai\" }";
         response.getWriter().write(jsonResponse);
     }
 }

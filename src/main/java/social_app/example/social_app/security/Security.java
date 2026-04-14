@@ -27,7 +27,8 @@ public class Security {
                 .authorizeHttpRequests(configure->{
                    configure.requestMatchers("/api/auth/**").permitAll()
                            .requestMatchers("/ws/**","/ws/info/**").permitAll()
-                           .requestMatchers(HttpMethod.POST,"/api/friendships/**").authenticated();
+                           .requestMatchers(HttpMethod.POST,"/api/friendships/**").authenticated()
+                           .requestMatchers(HttpMethod.GET,"/api/members/**").authenticated();
                 })
                 // use JwtAuthenticationEntryPoint to handle exception outside
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new JwtAuthenticationEntryPoint()))

@@ -20,6 +20,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(authException.getMessage()));
     }
 
+    public ResponseEntity<ApiResponse<String>> handleExpiredToken(ExpiredJwtException jwtException){
+        return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.error("Token het han hoac khong chinh xac"));
+    }
+
     @ExceptionHandler(SentFriendShipException.class)
     public ResponseEntity<ApiResponse<Void>> handleSentFriendShip(SentFriendShipException friendShipException){
         return ResponseEntity.badRequest().body(ApiResponse.error(friendShipException.getMessage()));
@@ -30,4 +34,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleNotFoundResource(NotFoundResource notFoundResource){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(notFoundResource.getMessage()));
     }
+
+
 }
