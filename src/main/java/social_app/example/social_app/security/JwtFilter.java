@@ -5,25 +5,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import social_app.example.social_app.exception.ExpiredJwtException;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
     String username = null;
     String token = null;
@@ -35,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
     }
     if(username!=null&& SecurityContextHolder.getContext().getAuthentication()==null){
        UserDetails userDetails =  this.userDetailsService.loadUserByUsername(username);
-        System.out.println(">>> TOKEN: "+token);
+        log.info("TOKEN: {}", token);
         if(this.jwtUtil.isValidateToken(token)){
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null
                     ,userDetails.getAuthorities());

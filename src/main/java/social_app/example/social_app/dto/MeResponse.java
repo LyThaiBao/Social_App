@@ -1,17 +1,21 @@
 package social_app.example.social_app.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-public class LoginResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+public class MeResponse {
     private Integer memberId;
-    private String accessToken;
-    private String role;
+    private String username;
     private String fullName;
+    private LocalDate birthDay;
+
 }

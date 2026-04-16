@@ -3,6 +3,7 @@ package social_app.example.social_app.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import social_app.example.social_app.dto.FriendShipDetail;
 import social_app.example.social_app.dto.FriendShipResponse;
 import social_app.example.social_app.entity.FriendShipType;
 import social_app.example.social_app.entity.FriendShips;
@@ -48,6 +49,16 @@ public class FriendShipServiceImp implements FriendShipService{
     public FriendShips findByAddresserIdAndRequesterId(Integer addresserId, Integer requesterId) {
         return this.friendShipRepository.findByAddresserIdAndRequesterId(addresserId,requesterId)
                 .orElseThrow(()-> new NotFoundResource("Not found request"));
+    }
+
+    @Override
+    public FriendShipDetail findBothId(Integer addresserId, Integer requesterId) {
+        FriendShips friendShip = this.findByAddresserIdAndRequesterId(addresserId,requesterId);
+        return FriendShipDetail.builder()
+                .id(friendShip.getId())
+                .addresserId(friendShip.getAddresser().getId())
+                .requesterId(friendShip.getRequester().getId())
+                .build();
     }
 
     @Override

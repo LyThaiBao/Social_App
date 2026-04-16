@@ -13,6 +13,7 @@ import social_app.example.social_app.dto.LoginRequest;
 import social_app.example.social_app.dto.LoginResponse;
 import social_app.example.social_app.dto.RegisterDTO;
 import social_app.example.social_app.dto.UserResponse;
+import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.security.JwtUtil;
@@ -56,6 +57,7 @@ public class AuthServiceImp implements AuthService{
             String accessToken = this.jwtUtil.createToken(users.getUsername());
             return LoginResponse
                     .builder()
+                    .memberId(users.getMember().getId())
                     .accessToken(accessToken)
                     .fullName(users.getMember().getFullName())
                     .role("member") // auto member, admin just only create direct by DB

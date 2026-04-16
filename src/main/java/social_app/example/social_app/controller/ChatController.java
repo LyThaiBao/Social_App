@@ -49,7 +49,7 @@ private final UserService userService;
 
         // 1. Lưu tin nhắn vào DB thông qua Service
         Messages messageSaved = this.chatService.saveMessage(chatMessage);
-            System.out.println(">>> Message saved: "+messageSaved);
+
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
         this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageSaved);

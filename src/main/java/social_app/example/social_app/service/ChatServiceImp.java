@@ -17,7 +17,6 @@ public class ChatServiceImp implements ChatService{
     private final UserService userService;
     @Override
     public Messages saveMessage(ChatMessage chatMessage) {
-        System.out.println("Sender >>> "+chatMessage.getSenderId());
         Members sender = this.memberService.getMemberById(chatMessage.getSenderId());
         Conversations conversation = this.conversationService.getConversationById(chatMessage.getConversationId());
         Messages message = Messages
@@ -27,7 +26,6 @@ public class ChatServiceImp implements ChatService{
                 .sender(sender)
                 .conversation(conversation)
                 .build();
-        System.out.println("Message >>>"+message);
         return this.messageService.save(message);
 
     }

@@ -20,7 +20,7 @@ public class MemberMapper {
                 .birthDay(members.getBirthDay())
                 .fullName(members.getFullName())
                 .id(members.getId())
-                .joinDay(members.getCreateAt())
+                .joinDay(members.getCreateAt()) 
                 .build();
     }
 }
