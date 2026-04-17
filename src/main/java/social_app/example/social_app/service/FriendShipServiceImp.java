@@ -1,6 +1,7 @@
 package social_app.example.social_app.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.FriendShipDetail;
@@ -11,15 +12,19 @@ import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.exception.SentFriendShipException;
+import social_app.example.social_app.mapper.FriendShipMapper;
 import social_app.example.social_app.repo.FriendShipRepository;
 
 import java.util.Objects;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FriendShipServiceImp implements FriendShipService{
     private final MemberService memberService;
     private final UserService userService;
+    private final FriendShipMapper friendShipMapper;
     private final FriendShipRepository  friendShipRepository;
 
     @Override
@@ -45,20 +50,40 @@ public class FriendShipServiceImp implements FriendShipService{
         return currentUser.getId().equals(members.getUser().getId());
     }
 
-    @Override
-    public FriendShips findByAddresserIdAndRequesterId(Integer addresserId, Integer requesterId) {
-        return this.friendShipRepository.findByAddresserIdAndRequesterId(addresserId,requesterId)
-                .orElseThrow(()-> new NotFoundResource("Not found request"));
+    private FriendShips getFriendShipsSingleWay(Integer requesterId, Integer addresserId) {
+        return  this.friendShipRepository.findByAddresserIdAndRequesterId(requesterId,addresserId)
+                .orElse(null);
+
     }
+
+
+
+    @Override
+    public FriendShips findByAddresserIdAndRequesterId(Integer requesterId, Integer addresserId) {
+        return getFriendShipsSingleWay(addresserId, requesterId);
+
+    }
+
 
     @Override
     public FriendShipDetail findBothId(Integer addresserId, Integer requesterId) {
-        FriendShips friendShip = this.findByAddresserIdAndRequesterId(addresserId,requesterId);
-        return FriendShipDetail.builder()
-                .id(friendShip.getId())
-                .addresserId(friendShip.getAddresser().getId())
-                .requesterId(friendShip.getRequester().getId())
+        FriendShips c1 = this.getFriendShipsSingleWay(requesterId,addresserId);
+        FriendShips c2 = this.getFriendShipsSingleWay(addresserId,requesterId);
+        log.info("C1: "+c1);
+        log.info("C2: "+c2);
+        if(c1 != null){
+            return this.friendShipMapper.convertToFriendShipDetail(c1);
+        }
+        if(c2 != null){
+            return this.friendShipMapper.convertToFriendShipDetail(c2);
+        }
+        return  FriendShipDetail.builder()
+                .friendShipType(null)
+                .id(null)
+                .addresserId(null)
+                .requesterId(null)
                 .build();
+
     }
 
     @Override

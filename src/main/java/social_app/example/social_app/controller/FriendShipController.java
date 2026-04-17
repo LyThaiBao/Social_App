@@ -40,7 +40,7 @@ public class FriendShipController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Denied",result));
     }
 
-    @GetMapping("/bothId")
+    @PostMapping("/bothId")
     public ResponseEntity<ApiResponse<FriendShipDetail>> getByBothID(@RequestBody FriendShipRequest request){
         FriendShipDetail friendShipDetail = this.friendShipService.findBothId(request.getAddresserId(), request.getRequesterId());
         return ResponseEntity.ok().body(ApiResponse.success("Get Success",friendShipDetail));

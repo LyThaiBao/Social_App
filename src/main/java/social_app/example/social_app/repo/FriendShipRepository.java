@@ -9,5 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface FriendShipRepository extends JpaRepository<FriendShips,Integer> {
-public Optional<FriendShips> findByAddresserIdAndRequesterId(Integer addresser,Integer requester);
+ Optional<FriendShips> findByAddresserIdAndRequesterId(Integer addresser,Integer requester);
+
 }
