@@ -21,8 +21,9 @@ public class FriendShipController {
     private final FriendShipService friendShipService;
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('MEMBER')")
-    public ResponseEntity<ApiResponse<FriendShipResponse>> sendRequest(@RequestBody FriendShipRequest request, Principal principal){
-        FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId());
+    public ResponseEntity<ApiResponse<FriendShipResponse>> sendRequest(@RequestBody FriendShipRequest request,Principal principal){
+        System.out.println(">>> Request: "+1);
+        FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId(),principal);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Sent Success",result));
 
     }
@@ -34,15 +35,33 @@ public class FriendShipController {
     }
 
     @PreAuthorize("hasAnyRole('MEMBER')")
-    @PostMapping("/denied")
+    @PostMapping("/denie")
     public ResponseEntity<ApiResponse<FriendShipResponse>> denied(@RequestBody FriendShipRequest request){
+        System.out.println(">>> Request: "+3);
+
         FriendShipResponse result = this.friendShipService.denied(request.getAddresserId(),request.getRequesterId());
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Denied",result));
     }
 
     @PostMapping("/bothId")
     public ResponseEntity<ApiResponse<FriendShipDetail>> getByBothID(@RequestBody FriendShipRequest request){
+        System.out.println(">>> Request: "+4);
+
         FriendShipDetail friendShipDetail = this.friendShipService.findBothId(request.getAddresserId(), request.getRequesterId());
         return ResponseEntity.ok().body(ApiResponse.success("Get Success",friendShipDetail));
+    }
+
+    @PostMapping("/unfriend")
+    public ResponseEntity<ApiResponse<FriendShipResponse>> unfriend(@RequestBody FriendShipRequest request){
+        System.out.println(">>> Request: "+5);
+
+        FriendShipResponse response = this.friendShipService.unFriend(request.getRequesterId(), request.getAddresserId());
+        return ResponseEntity.ok().body(ApiResponse.success("unFriend Success",response));
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<ApiResponse<FriendShipResponse>> cancelRequest(@RequestBody FriendShipRequest request){
+        FriendShipResponse response = this.friendShipService.cancelRequest(request.getRequesterId(), request.getAddresserId());
+        return ResponseEntity.ok().body(ApiResponse.success("Cancel request success",response));
     }
 }

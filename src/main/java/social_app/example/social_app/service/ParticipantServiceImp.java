@@ -10,9 +10,11 @@ import social_app.example.social_app.entity.Participants;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.exception.NotFoundResource;
+import social_app.example.social_app.mapper.ParticipantMapper;
 import social_app.example.social_app.repo.ParticipantRepository;
 
 import java.security.Principal;
+import java.util.List;
 
 
 @Service
@@ -21,27 +23,22 @@ public class ParticipantServiceImp implements ParticipantService{
     private final ParticipantRepository participantRepository;
     private final MemberService memberService;
     private final UserService userService;
-    private final ConversationService conversationService;
-    @Override
-    public ParticipantResponse createParticipant(ParticipantRequest request) {
-        if(request.getPrincipal() == null){
-            throw  new AuthException("Unauthenticated");
-        }
-        Conversations conversation = this.conversationService.getConversationById(request.getConversationId());
-        //---------Check Exactly Who was request, afraid fake info------------
-        String username = request.getPrincipal().getName();
-        Users user = this.userService.findByUsername(username);
-        Members member = this.memberService.getMemberById(user.getMember().getId());
-        Participants participant = Participants.builder()
-                .conversation(conversation)
-                .member(member)
-                .build();
-        this.participantRepository.save(participant);
-        return ParticipantResponse.builder()
-                .conversationId(conversation.getId())
-                .memberId(member.getId())
-                .build();
-    }
+//    private final ConversationService conversationService;
+    private final ParticipantMapper participantMapper;
+//    @Override
+//    public ParticipantResponse createParticipant(Integer memberId,Integer conversationId) {
+////        Conversations conversation = this.conversationService.getConversationById(conversationId);
+//        Members member = this.memberService.getMemberById(memberId);
+//        Participants participant = Participants.builder()
+//                .conversation(conversation)
+//                .member(member)
+//                .build();
+//        this.participantRepository.save(participant);
+//        return ParticipantResponse.builder()
+//                .conversationId(conversation.getId())
+//                .memberId(member.getId())
+//                .build();
+//    }
 
     @Override
     public ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal) {
@@ -53,6 +50,14 @@ public class ParticipantServiceImp implements ParticipantService{
                 .memberId(participant.getMember().getId())
                 .conversationId(participant.getConversation().getId())
                 .build();
+
+    }
+
+    @Override
+    public List<Participants> getAllParticipant(Principal principal) {
+        String username =principal.getName();
+        Users user = this.userService.findByUsername(username);
+        return this.participantRepository.findAllByMemberId(user.getMember().getId());
 
     }
 }

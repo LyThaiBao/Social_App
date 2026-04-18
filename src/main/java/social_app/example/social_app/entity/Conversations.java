@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "conversations")
 @NoArgsConstructor
@@ -22,6 +24,12 @@ public class Conversations {
     @Enumerated(EnumType.STRING)
     @Column(name = "conversation_type",length = 10,nullable = false)
     private ConversationType type;
+
+    @Column(name = "name")
+    private String conversationName;
+
+    @OneToMany(mappedBy = "conversation")
+    private List<Participants> participantsList;
 
 
 }

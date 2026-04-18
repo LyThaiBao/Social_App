@@ -1,5 +1,6 @@
 package social_app.example.social_app.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import social_app.example.social_app.exception.SentFriendShipException;
 import social_app.example.social_app.mapper.FriendShipMapper;
 import social_app.example.social_app.repo.FriendShipRepository;
 
+import java.security.Principal;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,7 +30,7 @@ public class FriendShipServiceImp implements FriendShipService{
     private final FriendShipRepository  friendShipRepository;
 
     @Override
-    public FriendShips createFriendShip(FriendShipType status, Integer addresserId, Integer requesterId) {
+    public FriendShips createFriendShip(FriendShipType status,  Integer requesterId,Integer addresserId) {
         Members requester = this.memberService.getMemberById(requesterId);
         Members addresser = this.memberService.getMemberById(addresserId);
         FriendShips friendShip = FriendShips.builder()
@@ -51,7 +53,7 @@ public class FriendShipServiceImp implements FriendShipService{
     }
 
     private FriendShips getFriendShipsSingleWay(Integer requesterId, Integer addresserId) {
-        return  this.friendShipRepository.findByAddresserIdAndRequesterId(requesterId,addresserId)
+        return  this.friendShipRepository.findByRequesterIdAndAddresserId(requesterId,addresserId)
                 .orElse(null);
 
     }
@@ -59,8 +61,8 @@ public class FriendShipServiceImp implements FriendShipService{
 
 
     @Override
-    public FriendShips findByAddresserIdAndRequesterId(Integer requesterId, Integer addresserId) {
-        return getFriendShipsSingleWay(addresserId, requesterId);
+    public FriendShips findByRequesterIdAndAddresserId(Integer requesterId, Integer addresserId) {
+        return getFriendShipsSingleWay(requesterId, addresserId);
 
     }
 
@@ -87,7 +89,9 @@ public class FriendShipServiceImp implements FriendShipService{
     }
 
     @Override
-    public FriendShipResponse sendRequest(Integer requesterId, Integer addresserId) {
+    @Transactional
+    public FriendShipResponse sendRequest(Integer requesterId, Integer addresserId,Principal principal) {
+        log.info(("HERE"));
         if(!this.isHasPermission(requesterId)){
             throw new SentFriendShipException("You do not have permission");
         }
@@ -99,8 +103,32 @@ public class FriendShipServiceImp implements FriendShipService{
         if(Objects.equals(addresserId, requesterId)){
             throw new SentFriendShipException("Can not send request to yourself");
         }
-        //-----create friendship------
-        FriendShips friendShip = this.createFriendShip(FriendShipType.PENDING,addresserId,requesterId);
+
+        FriendShipDetail friendShipDetail = this.findBothId(requesterId,addresserId);
+        if(friendShipDetail.getId() == null){
+            FriendShips friendShip = this.createFriendShip(FriendShipType.PENDING,requesterId,addresserId);
+        }
+
+        if(friendShipDetail.getFriendShipType()!=null && friendShipDetail.getFriendShipType().equals(FriendShipType.DENIED)){
+
+          String username = principal.getName();
+          Users user = this.userService.findByUsername(username);
+            log.info(">>>> MemID: "+user.getMember().getId());
+            log.info(">>> AddrID: "+friendShipDetail.getAddresserId());
+            FriendShips friendShip = this.getFriendShipsSingleWay(friendShipDetail.getRequesterId(),friendShipDetail.getAddresserId());
+          if(Objects.equals(user.getMember().getId(),friendShipDetail.getAddresserId())){
+              log.info("Addresser: "+addresserId);
+             Members addresser =  this.memberService.getMemberById(addresserId);
+             Members requester = this.memberService.getMemberById(requesterId);
+                friendShip.setRequester(requester);
+                friendShip.setAddresser(addresser);
+          }
+
+          friendShip.setStatus(FriendShipType.PENDING);
+          this.friendShipRepository.save(friendShip);
+        }
+
+        //-----return information------
         return FriendShipResponse
                 .builder()
                 .statusText("pending")
@@ -111,7 +139,7 @@ public class FriendShipServiceImp implements FriendShipService{
 
 @Override
 public FriendShipResponse accept(Integer addresserId,Integer requesterId) {
-    FriendShips friendShip = this.findByAddresserIdAndRequesterId(addresserId,requesterId);
+    FriendShips friendShip = this.findByRequesterIdAndAddresserId(requesterId,addresserId);
     if(!this.isHasPermission(addresserId)){
         throw new SentFriendShipException("You do not have permission");
     }
@@ -131,7 +159,7 @@ public FriendShipResponse accept(Integer addresserId,Integer requesterId) {
 
 @Override
 public FriendShipResponse denied(Integer addresserId, Integer requesterId) {
-    FriendShips friendShip = this.findByAddresserIdAndRequesterId(addresserId,requesterId);
+    FriendShips friendShip = this.findByRequesterIdAndAddresserId(requesterId,addresserId);
     if(!this.isHasPermission(addresserId)){
         throw new SentFriendShipException("You do not have permission");
     }
@@ -147,6 +175,45 @@ public FriendShipResponse denied(Integer addresserId, Integer requesterId) {
             .statusText("denied")
             .build();
 }
+
+    @Override
+    public FriendShipResponse unFriend(Integer requesterId, Integer addresserId) {
+        FriendShipDetail detail = this.findBothId(addresserId,requesterId);
+        FriendShips friendShip =  this.findByRequesterIdAndAddresserId(detail.getRequesterId(),detail.getAddresserId());
+        if(friendShip == null){
+            throw  new NotFoundResource("Not found friendship");
+        }
+        if(friendShip.getStatus() != FriendShipType.ACCEPTED){
+            throw new SentFriendShipException("Can not un friend because current status is not a friend");
+        }
+        this.friendShipRepository.delete(friendShip);
+        return FriendShipResponse.builder()
+                .message("unFriend success")
+                .statusText("unFriend")
+                .build();
+
+    }
+
+    @Override
+    public FriendShipResponse cancelRequest(Integer requesterId, Integer addresserId) {
+        if(!this.isHasPermission(requesterId)){
+            throw new SentFriendShipException("You do not have permission");
+        }
+
+        FriendShips friendShip =  this.findByRequesterIdAndAddresserId(requesterId,addresserId);
+        if(friendShip == null){
+            throw  new NotFoundResource("Not found friendship");
+        }
+        if(friendShip.getStatus() != FriendShipType.PENDING){
+            throw new SentFriendShipException("Can not cancel request because current status is not pending");
+        }
+        this.friendShipRepository.delete(friendShip);
+        return FriendShipResponse.builder()
+                .message("cancel request success")
+                .statusText("cancel request")
+                .build();
+
+    }
 
 }
 

@@ -15,4 +15,6 @@ public class FriendShipMapper {
                 .friendShipType(friendShip.getStatus())
                 .build();
     }
+
+
 }
