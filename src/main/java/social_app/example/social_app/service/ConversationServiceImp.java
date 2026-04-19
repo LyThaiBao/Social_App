@@ -45,6 +45,7 @@ public class ConversationServiceImp implements ConversationService{
 
             return ConversationResponse.builder()
                     .conversationId(s.getConversation().getId())
+                    .type(conversation.getType())
                     .conversationName(conversationName)
                     .build();
         }).toList();

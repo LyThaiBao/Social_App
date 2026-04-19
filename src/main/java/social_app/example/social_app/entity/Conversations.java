@@ -31,5 +31,7 @@ public class Conversations {
     @OneToMany(mappedBy = "conversation")
     private List<Participants> participantsList;
 
+    @OneToMany(mappedBy = "conversation")
+    private List<Messages> messages;
 
 }
