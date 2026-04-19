@@ -1,13 +1,16 @@
 package social_app.example.social_app.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.ChatMessage;
-import social_app.example.social_app.entity.Conversations;
-import social_app.example.social_app.entity.Members;
-import social_app.example.social_app.entity.Messages;
-import social_app.example.social_app.entity.Users;
+import social_app.example.social_app.entity.*;
 
+import java.security.Principal;
+import java.util.List;
+import java.util.Objects;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImp implements ChatService{
@@ -15,6 +18,7 @@ public class ChatServiceImp implements ChatService{
     private final ConversationService conversationService;
     private final MessageService messageService;
     private final UserService userService;
+    private final  ParticipantService participantService;
     @Override
     public Messages saveMessage(ChatMessage chatMessage) {
         Members sender = this.memberService.getMemberById(chatMessage.getSenderId());
@@ -32,9 +36,19 @@ public class ChatServiceImp implements ChatService{
 
     @Override
     public String getUsernameDest(ChatMessage chatMessage) {
-        Members member = this.memberService.getMemberById(chatMessage.getRecipientId());
-        Users user = this.userService.findByUserId(member.getUser().getId());
-        return user.getUsername();
+        // TAM THOI COMMENT DE RUN WS DE HON
+//        String username = principal.getName();
+        Members owner = this.memberService.getMemberById(chatMessage.getSenderId());
+        log.info("Sender ID "+chatMessage.getSenderId());
+//        Users users = this.userService.findByUsername(username);
+        List<Participants> participants = this.participantService.getByConversationId(chatMessage.getConversationId());
+        List<Participants> participantsOfPartner =  participants.stream().filter(p -> !Objects.equals(p.getMember().getId(),owner.getId())).toList();
+        if(!participantsOfPartner.isEmpty()){
+            Members member = participants.getFirst().getMember();
+            Users user = this.userService.findByUserId(member.getUser().getId());
+            return user.getUsername();
+        }
 
+        return  null;
     }
 }

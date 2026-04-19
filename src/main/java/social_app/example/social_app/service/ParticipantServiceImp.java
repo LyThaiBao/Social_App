@@ -60,4 +60,9 @@ public class ParticipantServiceImp implements ParticipantService{
         return this.participantRepository.findAllByMemberId(user.getMember().getId());
 
     }
+
+    @Override
+    public List<Participants> getByConversationId(Integer conversationId) {
+        return this.participantRepository.findByConversationId(conversationId);
+    }
 }

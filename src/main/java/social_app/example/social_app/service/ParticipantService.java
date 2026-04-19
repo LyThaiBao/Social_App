@@ -10,5 +10,6 @@ import java.util.List;
 public interface ParticipantService {
 //    ParticipantResponse createParticipant(Integer memberId,Integer conversationId);
     ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal);
-    List<Participants> getAllParticipant(Principal principal);
+    List<Participants> getAllParticipant(Principal principal);// truyen principal de tu lay cua no thoi
+    List<Participants> getByConversationId(Integer conversationId);
 }

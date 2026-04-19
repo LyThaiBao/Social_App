@@ -34,17 +34,19 @@ private final UserService userService;
  * Client gửi đến: /app/chat.private
 */
         @MessageMapping("/chat.private") // chat 1;1
-    public void processPrivateMessage(@Payload ChatMessage chatMessage,Principal principal){ // principal lay thong tin user dang login
+    public void processPrivateMessage(@Payload ChatMessage chatMessage){
+            log.info(" >>> LOG LOG");
         //------------GET Principal-------------
-        if(principal == null){
-            throw new AuthException("Unauthenticated");
-        }
-        String senderName = principal.getName();
-        Users sender = this.userService.findByUsername(senderName);
-        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
+//        if(principal == null){
+//            throw new AuthException("Unauthenticated");
+//        }
+//        String senderName = principal.getName();
+//        Users sender = this.userService.findByUsername(senderName);
+//        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
 
         //BE ko tin sender FE gui len vi co the gia mao admin,=> dung principal
         // Bcs login by User so Principal save user info
+       String senderName =  this.userService.findByUserId(chatMessage.getSenderId()).getUsername();
         String destinationUser = this.chatService.getUsernameDest(chatMessage);
 
         // 1. Lưu tin nhắn vào DB thông qua Service
@@ -73,7 +75,7 @@ private final UserService userService;
         this.messagingTemplate.convertAndSend(destination,messageSaved);
     }
 
-    @MessageMapping("/public.type.{groupId}")
+    @MessageMapping("/public.type.{groupId}") // typing...
     public void processTypingMessage(@DestinationVariable Integer groupId, Principal principal){
         //------------GET Principal-------------
         if(principal == null){
