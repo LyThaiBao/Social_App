@@ -28,7 +28,7 @@ public class Conversations {
     @Column(name = "name")
     private String conversationName;
 
-    @OneToMany(mappedBy = "conversation")
+    @OneToMany(mappedBy = "conversation",fetch = FetchType.EAGER)
     private List<Participants> participantsList;
 
     @OneToMany(mappedBy = "conversation")

@@ -23,22 +23,20 @@ public class ParticipantServiceImp implements ParticipantService{
     private final ParticipantRepository participantRepository;
     private final MemberService memberService;
     private final UserService userService;
-//    private final ConversationService conversationService;
-    private final ParticipantMapper participantMapper;
-//    @Override
-//    public ParticipantResponse createParticipant(Integer memberId,Integer conversationId) {
-////        Conversations conversation = this.conversationService.getConversationById(conversationId);
-//        Members member = this.memberService.getMemberById(memberId);
-//        Participants participant = Participants.builder()
-//                .conversation(conversation)
-//                .member(member)
-//                .build();
-//        this.participantRepository.save(participant);
-//        return ParticipantResponse.builder()
-//                .conversationId(conversation.getId())
-//                .memberId(member.getId())
-//                .build();
-//    }
+
+    @Override
+    public ParticipantResponse createParticipant(Integer memberId,Conversations conversation) {
+        Members member = this.memberService.getMemberById(memberId);
+        Participants participant = Participants.builder()
+                .conversation(conversation)
+                .member(member)
+                .build();
+        this.participantRepository.save(participant);
+        return ParticipantResponse.builder()
+                .conversationId(conversation.getId())
+                .memberId(member.getId())
+                .build();
+    }
 
     @Override
     public ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal) {

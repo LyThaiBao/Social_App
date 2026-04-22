@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import social_app.example.social_app.entity.ConversationType;
 
+import java.util.List;
+
 @Builder
 @Data
 @NoArgsConstructor

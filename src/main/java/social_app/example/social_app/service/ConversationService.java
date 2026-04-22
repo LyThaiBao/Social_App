@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ConversationService {
-    Conversations getConversationById(Integer id);
+    Conversations createPrivateConversation(Integer currentMemberId,Integer partnerId);
+    Conversations getConversationEntityById(Integer id);
     List<ConversationResponse> getConversations(Principal principal);
+    ConversationResponse getConversation(Integer id,Principal principal);
+    String resolveConversationName(Conversations conversation, Integer currentMemberId);
+    ConversationResponse findOrCreatePrivateConversation(Principal principal, Integer partnerId);
     }

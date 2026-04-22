@@ -30,7 +30,10 @@ public class Security {
                            .requestMatchers(HttpMethod.POST,"/api/friendship/**").authenticated()
                            .requestMatchers(HttpMethod.GET,"/api/me/**").permitAll()
                            .requestMatchers(HttpMethod.GET,"/api/members/**").authenticated()
-                           .requestMatchers(HttpMethod.GET,"/api/conversations/**").authenticated();
+                           .requestMatchers(HttpMethod.POST,"/api/conversations/**").authenticated()
+                           .requestMatchers(HttpMethod.GET,"/api/conversations/**").authenticated()
+                           .requestMatchers(HttpMethod.POST,"/api/messages/**").authenticated()
+                           .requestMatchers(HttpMethod.GET,"/api/messages/**").authenticated();
                 })
 
                 // use JwtAuthenticationEntryPoint to handle exception outside

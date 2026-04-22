@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import social_app.example.social_app.dto.ChatMessage;
+import social_app.example.social_app.dto.MessageResponse;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
@@ -35,12 +36,13 @@ private final UserService userService;
 */
         @MessageMapping("/chat.private") // chat 1;1
     public void processPrivateMessage(@Payload ChatMessage chatMessage){
-            log.info(" >>> LOG LOG");
+            log.info(" >>> LOG LOG"+chatMessage);
         //------------GET Principal-------------
 //        if(principal == null){
 //            throw new AuthException("Unauthenticated");
 //        }
-//        String senderName = principal.getName();
+//        String senderNam = principal.getName();
+//        log.info(">>>NAME: "+senderNam);
 //        Users sender = this.userService.findByUsername(senderName);
 //        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
 
@@ -51,12 +53,19 @@ private final UserService userService;
 
         // 1. Lưu tin nhắn vào DB thông qua Service
         Messages messageSaved = this.chatService.saveMessage(chatMessage);
-
+            MessageResponse messageResponse = MessageResponse.builder()
+                    .content(messageSaved.getContent())
+                    .senderId(messageSaved.getSender().getId())
+                    .messageType(messageSaved.getType())
+                    .senderName(messageSaved.getSender().getFullName())
+                    .conversationId(messageSaved.getConversation().getId())
+                    .build();
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
-        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageSaved);
+//        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
+            this.messagingTemplate.convertAndSend("/queue/private-" +messageResponse.getConversationId(),messageResponse);
         // 3. Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
-        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageSaved);
+//        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
     }
 
     @MessageMapping("/public.group.{groupId}")

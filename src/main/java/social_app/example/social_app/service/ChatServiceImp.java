@@ -22,7 +22,7 @@ public class ChatServiceImp implements ChatService{
     @Override
     public Messages saveMessage(ChatMessage chatMessage) {
         Members sender = this.memberService.getMemberById(chatMessage.getSenderId());
-        Conversations conversation = this.conversationService.getConversationById(chatMessage.getConversationId());
+        Conversations conversation = this.conversationService.getConversationEntityById(chatMessage.getConversationId());
         Messages message = Messages
                 .builder()
                 .type(chatMessage.getMessageType())
