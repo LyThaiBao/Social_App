@@ -1,6 +1,7 @@
 package social_app.example.social_app.mapper;
 
 import org.springframework.stereotype.Component;
+import social_app.example.social_app.dto.LastMessageResponse;
 import social_app.example.social_app.dto.MessageResponse;
 import social_app.example.social_app.entity.Messages;
 
@@ -17,6 +18,12 @@ public class MessageMapper {
                 .senderName(message.getSender().getFullName())
                 .content(message.getContent())
                 .conversationId(message.getConversation().getId())
+                .build();
+    }
+
+    public LastMessageResponse convertToLastMessageResponse(Messages message){
+        return LastMessageResponse.builder()
+                .content(message.getContent())
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package social_app.example.social_app.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import social_app.example.social_app.dto.LastMessageResponse;
 import social_app.example.social_app.dto.MessageResponse;
 import social_app.example.social_app.entity.Conversations;
 import social_app.example.social_app.entity.Messages;
@@ -29,5 +30,14 @@ public class MessageServiceImp implements MessageService{
         List<Messages> messagesList = this.messageRepository.getMessagesByConversationId(conversationId);
 
         return messagesList.stream().map(this.messageMapper::convertToMessageResponse).toList();
+    }
+
+    @Override
+    public LastMessageResponse getLastMessageByConversationId(Integer conversationId) {
+        // call here for it throw Error and return to client when cvn id null
+        Conversations conversation = this.conversationService.getConversationEntityById(conversationId);
+        List<Messages> messagesList = this.messageRepository.getMessagesByConversationId(conversationId);
+
+        return this.messageMapper.convertToLastMessageResponse(messagesList.getLast());
     }
 }
