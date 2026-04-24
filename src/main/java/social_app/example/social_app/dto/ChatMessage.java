@@ -16,10 +16,10 @@ public class ChatMessage {
     public enum ChatType{
         CHAT,JOIN,LEAVE
     }
-    private String content;
-    private Integer senderId;
+    private String content; // *
+    private Integer senderId;// *
 //    private Integer recipientId;
-    private Integer conversationId;
+    private Integer conversationId;// *
     private ChatType type;
     private MessageType messageType;
     private Timestamp timestamp;

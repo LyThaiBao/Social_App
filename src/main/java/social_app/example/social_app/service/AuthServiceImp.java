@@ -52,6 +52,7 @@ public class AuthServiceImp implements AuthService{
             //------------------Check user name / Password --------------------------
             Authentication authentication = this.authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
+            // returned UserDetails
             //------------------Take user name to provide for create token-----------
             Users users = this.userService.findByUsername(request.getUsername());
             String accessToken = this.jwtUtil.createToken(users.getUsername());

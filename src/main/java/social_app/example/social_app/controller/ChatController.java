@@ -37,6 +37,10 @@ private final UserService userService;
         @MessageMapping("/chat.private") // chat 1;1
     public void processPrivateMessage(@Payload ChatMessage chatMessage){
             log.info(" >>> LOG LOG"+chatMessage);
+
+         //Code chat chatType if(chatType == chat ) ==> send signal for Fe show icon typing ....
+
+            
         //------------GET Principal-------------
 //        if(principal == null){
 //            throw new AuthException("Unauthenticated");
@@ -48,7 +52,7 @@ private final UserService userService;
 
         //BE ko tin sender FE gui len vi co the gia mao admin,=> dung principal
         // Bcs login by User so Principal save user info
-       String senderName =  this.userService.findByUserId(chatMessage.getSenderId()).getUsername();
+       String senderName =  this.userService.findByUserId(chatMessage.getSenderId()).getUsername(); // tam thoi tin
         String destinationUser = this.chatService.getUsernameDest(chatMessage);
 
         // 1. Lưu tin nhắn vào DB thông qua Service
