@@ -17,6 +17,7 @@ public class ChatMessage {
         CHAT,JOIN,LEAVE
     }
     private String content; // *
+    private String mediaUrl;
     private Integer senderId;// *
 //    private Integer recipientId;
     private Integer conversationId;// *

@@ -24,6 +24,9 @@ public class Messages {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "mediaUrl")
+    private String mediaUrl;
+
     @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversations conversation;

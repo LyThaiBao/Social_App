@@ -14,6 +14,7 @@ import social_app.example.social_app.entity.MessageType;
 public class MessageResponse {
 
     private String content;
+    private String mediaUrl;
     private Integer conversationId;
     private Integer senderId;
     private String senderName;

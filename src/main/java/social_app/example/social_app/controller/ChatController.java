@@ -59,6 +59,7 @@ private final UserService userService;
         Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = MessageResponse.builder()
                     .content(messageSaved.getContent())
+                    .mediaUrl(messageSaved.getMediaUrl())
                     .senderId(messageSaved.getSender().getId())
                     .messageType(messageSaved.getType())
                     .senderName(messageSaved.getSender().getFullName())
