@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import social_app.example.social_app.dto.UploadResponse;
+import social_app.example.social_app.entity.MessageType;
+
 
 import java.util.Map;
 
@@ -15,15 +18,18 @@ import java.util.Map;
 public class CloudServiceImp implements CloudService {
     private final Cloudinary cloudinary;
     @Override
-    public String upload(MultipartFile file) {
+    public UploadResponse upload(MultipartFile file) {
+        MessageType type = MessageType.FILE;
         String resourceType = "raw";
         String contentType = file.getContentType();
         assert contentType != null; // constrain deff null
-        if(contentType.startsWith(" video/")){
+        if(contentType.startsWith("video/")){
             resourceType = "video";
+            type = MessageType.VIDEO;
         }
         if(contentType.startsWith("image/")){
             resourceType = "image";
+            type = MessageType.IMAGE;
         }
         String nameFile = file.getOriginalFilename();
        long currentTime = System.currentTimeMillis();
@@ -33,9 +39,13 @@ public class CloudServiceImp implements CloudService {
                             "folder","home/social/messages",
                             "resource_type",resourceType
             );
-           Map result =  this.cloudinary.uploader().upload(file.getBytes(), params);
+
+           Map result =  this.cloudinary.uploader().uploadLarge(file.getInputStream(),params); // send input stream instead byte --> when FE abort it'll break stream and throw ex
             System.out.println("RESULT: "+result);
-            return result.get("url").toString();
+            return UploadResponse.builder()
+                    .mediaUrl(result.get("secure_url").toString())
+                    .mediaType(type)
+                    .build();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

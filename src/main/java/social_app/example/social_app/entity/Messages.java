@@ -27,6 +27,8 @@ public class Messages {
     @Column(name = "mediaUrl")
     private String mediaUrl;
 
+    @Column(name = "mediaType")
+    private MessageType mediaType;
     @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversations conversation;
@@ -37,7 +39,7 @@ public class Messages {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
-    private MessageType type = MessageType.TEXT; // default is type TEXT
+    private MessageType type = MessageType.FILE; // default is type File
 
     @CreationTimestamp
     @Column(name = "created_at" ,nullable = false)

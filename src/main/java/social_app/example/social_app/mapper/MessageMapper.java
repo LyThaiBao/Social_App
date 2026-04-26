@@ -17,6 +17,7 @@ public class MessageMapper {
                 .senderId(message.getSender().getId())
                 .senderName(message.getSender().getFullName())
                 .content(message.getContent())
+                .mediaUrl(message.getMediaUrl())
                 .conversationId(message.getConversation().getId())
                 .build();
     }

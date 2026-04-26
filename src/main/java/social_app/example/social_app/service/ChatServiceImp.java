@@ -21,12 +21,15 @@ public class ChatServiceImp implements ChatService{
     private final  ParticipantService participantService;
     @Override
     public Messages saveMessage(ChatMessage chatMessage) {
+        log.info(">>> ME: "+chatMessage);
         Members sender = this.memberService.getMemberById(chatMessage.getSenderId());
         Conversations conversation = this.conversationService.getConversationEntityById(chatMessage.getConversationId());
         Messages message = Messages
                 .builder()
                 .type(chatMessage.getMessageType())
                 .content(chatMessage.getContent())
+                .mediaUrl(chatMessage.getMediaUrl())
+                .mediaType(chatMessage.getMessageType())
                 .sender(sender)
                 .conversation(conversation)
                 .build();

@@ -9,13 +9,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import social_app.example.social_app.dto.ChatMessage;
 import social_app.example.social_app.dto.MessageResponse;
-import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
-import social_app.example.social_app.repo.MessageRepository;
 import social_app.example.social_app.service.ChatService;
-import social_app.example.social_app.service.MemberService;
 import social_app.example.social_app.service.ParticipantService;
 import social_app.example.social_app.service.UserService;
 
