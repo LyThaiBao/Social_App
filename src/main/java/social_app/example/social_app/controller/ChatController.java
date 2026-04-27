@@ -9,12 +9,17 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import social_app.example.social_app.dto.ChatMessage;
 import social_app.example.social_app.dto.MessageResponse;
+import social_app.example.social_app.dto.TypingRequest;
+import social_app.example.social_app.dto.TypingResponse;
+import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.service.ChatService;
+import social_app.example.social_app.service.MemberService;
 import social_app.example.social_app.service.ParticipantService;
 import social_app.example.social_app.service.UserService;
+import social_app.example.social_app.util.ConvertDateTime;
 
 import java.security.Principal;
 
@@ -27,6 +32,8 @@ private final SimpMessagingTemplate messagingTemplate;
 private final ParticipantService participantService;
 private final ChatService chatService;
 private final UserService userService;
+private final MemberService memberService;
+private final ConvertDateTime convertDateTime;
 /*
  * Gửi tin nhắn cá nhân (1-1)
  * Client gửi đến: /app/chat.private
@@ -57,6 +64,7 @@ private final UserService userService;
             MessageResponse messageResponse = MessageResponse.builder()
                     .content(messageSaved.getContent())
                     .mediaUrl(messageSaved.getMediaUrl())
+                    .sentTime(this.convertDateTime.convertInstant(messageSaved.getCreatedAt()))
                     .senderId(messageSaved.getSender().getId())
                     .messageType(messageSaved.getType())
                     .senderName(messageSaved.getSender().getFullName())
@@ -87,14 +95,22 @@ private final UserService userService;
     }
 
     @MessageMapping("/public.type.{groupId}") // typing...
-    public void processTypingMessage(@DestinationVariable Integer groupId, Principal principal){
+    public void processTypingMessage(@DestinationVariable Integer groupId, @Payload TypingRequest request){
+            log.info("TYPING..................................."+request);
         //------------GET Principal-------------
-        if(principal == null){
-            throw new AuthException("Unauthenticated");
-        }
-        String senderName = principal.getName();
+//        if(principal == null){ gia lap tam thoi
+//            throw new AuthException("Unauthenticated");
+//        }
+//        String senderName = principal.getName();
+        Members member = this.memberService.getMemberById(request.getSenderId());
+        String senderName = member.getUser().getUsername();
+
+        TypingResponse response = TypingResponse.builder()
+                .memberName(member.getFullName())
+                .senderId(request.getSenderId())
+                .build();
         String destination = "/topic/type." + groupId;//FE sub ==> /topic/group.groupId
-        this.messagingTemplate.convertAndSend(destination,senderName);
+        this.messagingTemplate.convertAndSend(destination,response);
     }
 
 
