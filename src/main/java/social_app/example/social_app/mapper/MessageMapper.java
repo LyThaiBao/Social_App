@@ -22,11 +22,12 @@ public class MessageMapper {
 
         MessageResponse.MessageResponseBuilder messageResponseBuilder =  MessageResponse.builder()
                 .id(message.getId())
-                .messageType(message.getMediaType())
+                .messageType(message.getType())
                 .senderId(message.getSender().getId())
                 .senderName(message.getSender().getFullName())
                 .content(message.getContent())
                 .mediaUrl(message.getMediaUrl())
+                .mediaType(message.getMediaType())
                 .sentTime(this.convertDateTime.convertInstant(message.getCreatedAt()))
                 .conversationId(message.getConversation().getId());
         if(message.getParentMessage() !=null){
@@ -41,7 +42,8 @@ public class MessageMapper {
     public LastMessageResponse convertToLastMessageResponse(Messages message){
         return LastMessageResponse.builder()
                 .content(message.getContent())
-                .messageType(message.getMediaType())
+                .messageType(message.getType())
+                .mediaType(message.getMediaType())
                 .lastTime(this.convertDateTime.convertInstant(message.getCreatedAt()))
                 .build();
     }

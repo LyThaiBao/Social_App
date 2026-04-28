@@ -54,11 +54,11 @@ private final ConvertDateTime convertDateTime;
 
         //BE ko tin sender FE gui len vi co the gia mao admin,=> dung principal
         // Bcs login by User so Principal save user info
-       String senderName =  this.userService.findByUserId(chatMessage.getSenderId()).getUsername(); // tam thoi tin
+        String senderName =  this.userService.findByUserId(chatMessage.getSenderId()).getUsername(); // tam thoi tin
         String destinationUser = this.chatService.getUsernameDest(chatMessage);
 
         // 1. Lưu tin nhắn vào DB thông qua Service
-        Messages messageSaved = this.chatService.saveMessage(chatMessage);
+            Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private

@@ -21,6 +21,7 @@ public class ChatServiceImp implements ChatService{
     private final  ParticipantService participantService;
     @Override
     public Messages saveMessage(ChatMessage chatMessage) {
+
         Members sender = this.memberService.getMemberById(chatMessage.getSenderId());
         Conversations conversation = this.conversationService.getConversationEntityById(chatMessage.getConversationId());
         Messages.MessagesBuilder messagesBuilder = Messages
@@ -28,7 +29,7 @@ public class ChatServiceImp implements ChatService{
                 .type(chatMessage.getMessageType())
                 .content(chatMessage.getContent())
                 .mediaUrl(chatMessage.getMediaUrl())
-                .mediaType(chatMessage.getMessageType())
+                .mediaType(chatMessage.getMediaType())
                 .sender(sender)
                 .conversation(conversation);
 

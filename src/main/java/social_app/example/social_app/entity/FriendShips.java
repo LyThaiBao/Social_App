@@ -3,6 +3,7 @@ package social_app.example.social_app.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import social_app.example.social_app.type.FriendShipType;
 
 import java.time.Instant;
 

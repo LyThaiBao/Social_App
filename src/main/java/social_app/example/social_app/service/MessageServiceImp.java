@@ -51,6 +51,7 @@ public class MessageServiceImp implements MessageService{
                 .id(messageSaved.getId())
                 .content(messageSaved.getContent())
                 .mediaUrl(messageSaved.getMediaUrl())
+                .mediaType(messageSaved.getMediaType())
                 .sentTime(this.convertDateTime.convertInstant(messageSaved.getCreatedAt()))
                 .senderId(messageSaved.getSender().getId())
                 .messageType(messageSaved.getType())
@@ -62,7 +63,7 @@ public class MessageServiceImp implements MessageService{
             messageResponse.parentId(messageSaved.getParentMessage().getId());
             messageResponse.parentMessageContent(messageSaved.getParentMessage().getContent());
             messageResponse.parentMessageSenderName(messageSaved.getParentMessage().getSender().getFullName());
-            messageResponse.parentMediaType(messageSaved.getParentMessage().getType());
+            messageResponse.parentMediaType(messageSaved.getParentMessage().getMediaType());
         }
         return messageResponse.build(); // built
     }

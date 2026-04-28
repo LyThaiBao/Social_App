@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.FriendShipDetail;
 import social_app.example.social_app.dto.FriendShipResponse;
-import social_app.example.social_app.entity.FriendShipType;
+import social_app.example.social_app.type.FriendShipType;
 import social_app.example.social_app.entity.FriendShips;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Users;
@@ -18,7 +18,6 @@ import social_app.example.social_app.repo.FriendShipRepository;
 
 import java.security.Principal;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service

@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import social_app.example.social_app.dto.UploadResponse;
-import social_app.example.social_app.entity.MessageType;
+import social_app.example.social_app.type.MediaType;
+import social_app.example.social_app.type.MessageType;
 
 
 import java.util.Map;
@@ -19,17 +20,17 @@ public class CloudServiceImp implements CloudService {
     private final Cloudinary cloudinary;
     @Override
     public UploadResponse upload(MultipartFile file) {
-        MessageType type = MessageType.FILE;
+        MediaType type = MediaType.FILE;
         String resourceType = "raw";
         String contentType = file.getContentType();
         assert contentType != null; // constrain deff null
         if(contentType.startsWith("video/")){
             resourceType = "video";
-            type = MessageType.VIDEO;
+            type = MediaType.VIDEO;
         }
         if(contentType.startsWith("image/")){
             resourceType = "image";
-            type = MessageType.IMAGE;
+            type = MediaType.IMAGE;
         }
         String nameFile = file.getOriginalFilename();
        long currentTime = System.currentTimeMillis();

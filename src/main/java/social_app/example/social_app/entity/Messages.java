@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import social_app.example.social_app.type.MediaType;
+import social_app.example.social_app.type.MessageType;
 
 import java.time.Instant;
 import java.util.List;
@@ -25,11 +27,17 @@ public class Messages {
     @Column(name = "content")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_type")
+    private MessageType type = MessageType.TEXT; // default is type File
+
     @Column(name = "mediaUrl")
     private String mediaUrl;
 
     @Column(name = "mediaType")
-    private MessageType mediaType;
+    @Enumerated(EnumType.STRING)
+    private MediaType mediaType;
+
     @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversations conversation;
@@ -38,9 +46,7 @@ public class Messages {
     @JoinColumn(name = "sender")
     private Members sender;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "message_type")
-    private MessageType type = MessageType.FILE; // default is type File
+
 
     // case this msg is reply msg
     @ManyToOne(fetch = FetchType.LAZY)

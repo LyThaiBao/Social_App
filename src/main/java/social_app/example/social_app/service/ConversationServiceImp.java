@@ -3,7 +3,7 @@ package social_app.example.social_app.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.ConversationResponse;
-import social_app.example.social_app.entity.ConversationType;
+import social_app.example.social_app.type.ConversationType;
 import social_app.example.social_app.entity.Conversations;
 import social_app.example.social_app.entity.Participants;
 import social_app.example.social_app.entity.Users;

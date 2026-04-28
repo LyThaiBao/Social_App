@@ -2,7 +2,7 @@ package social_app.example.social_app.service;
 
 import social_app.example.social_app.dto.FriendShipDetail;
 import social_app.example.social_app.dto.FriendShipResponse;
-import social_app.example.social_app.entity.FriendShipType;
+import social_app.example.social_app.type.FriendShipType;
 import social_app.example.social_app.entity.FriendShips;
 
 import java.security.Principal;
