@@ -10,4 +10,7 @@ public interface MessageService {
     Messages save(Messages messages);
     List<MessageResponse> getMessageByConversationId(Integer conversationId);
     LastMessageResponse getLastMessageByConversationId(Integer conversationId);
+    MessageResponse getMessageResponse(Messages message);
+    Messages getMessageEntityById(Integer id);
+
 }

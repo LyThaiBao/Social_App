@@ -21,6 +21,7 @@ public class MessageController {
     private final MessageService messageService;
     @PostMapping
     public ResponseEntity<ApiResponse<List<MessageResponse>>> getMessagesByConversationId(@RequestBody MessageRequest request){
+        log.info("GOT HERE");
         List<MessageResponse> messageResponses =  this.messageService.getMessageByConversationId(request.getConversationId());
         return ResponseEntity.ok().body(ApiResponse.success("Get message success",messageResponses));
     }

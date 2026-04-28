@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import social_app.example.social_app.entity.MessageType;
+import social_app.example.social_app.entity.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -24,4 +25,5 @@ public class ChatMessage {
     private Integer conversationId;// *
     private ChatType type;
     private MessageType messageType;
+    private Integer parentMessageId;
 }

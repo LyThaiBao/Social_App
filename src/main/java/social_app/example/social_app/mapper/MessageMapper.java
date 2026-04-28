@@ -20,15 +20,20 @@ public class MessageMapper {
     private final ConvertDateTime convertDateTime;
     public MessageResponse convertToMessageResponse(Messages message){
 
-        return MessageResponse.builder()
+        MessageResponse.MessageResponseBuilder messageResponseBuilder =  MessageResponse.builder()
                 .messageType(message.getType())
                 .senderId(message.getSender().getId())
                 .senderName(message.getSender().getFullName())
                 .content(message.getContent())
                 .mediaUrl(message.getMediaUrl())
                 .sentTime(this.convertDateTime.convertInstant(message.getCreatedAt()))
-                .conversationId(message.getConversation().getId())
-                .build();
+                .conversationId(message.getConversation().getId());
+        if(message.getParentMessage() !=null){
+            messageResponseBuilder.parentId(message.getParentMessage().getId());
+            messageResponseBuilder.parentMessageSenderName(message.getParentMessage().getSender().getFullName());
+            messageResponseBuilder.parentMessageContent(message.getParentMessage().getContent());
+        }
+        return messageResponseBuilder.build();
     }
 
     public LastMessageResponse convertToLastMessageResponse(Messages message){

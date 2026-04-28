@@ -15,10 +15,7 @@ import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
-import social_app.example.social_app.service.ChatService;
-import social_app.example.social_app.service.MemberService;
-import social_app.example.social_app.service.ParticipantService;
-import social_app.example.social_app.service.UserService;
+import social_app.example.social_app.service.*;
 import social_app.example.social_app.util.ConvertDateTime;
 
 import java.security.Principal;
@@ -31,6 +28,7 @@ public class ChatController {
 private final SimpMessagingTemplate messagingTemplate;
 private final ParticipantService participantService;
 private final ChatService chatService;
+private final MessageService messageService;
 private final UserService userService;
 private final MemberService memberService;
 private final ConvertDateTime convertDateTime;
@@ -61,15 +59,7 @@ private final ConvertDateTime convertDateTime;
 
         // 1. Lưu tin nhắn vào DB thông qua Service
         Messages messageSaved = this.chatService.saveMessage(chatMessage);
-            MessageResponse messageResponse = MessageResponse.builder()
-                    .content(messageSaved.getContent())
-                    .mediaUrl(messageSaved.getMediaUrl())
-                    .sentTime(this.convertDateTime.convertInstant(messageSaved.getCreatedAt()))
-                    .senderId(messageSaved.getSender().getId())
-                    .messageType(messageSaved.getType())
-                    .senderName(messageSaved.getSender().getFullName())
-                    .conversationId(messageSaved.getConversation().getId())
-                    .build();
+            MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
 //        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);

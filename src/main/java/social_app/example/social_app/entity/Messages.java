@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "messages")
@@ -41,6 +42,13 @@ public class Messages {
     @Column(name = "message_type")
     private MessageType type = MessageType.FILE; // default is type File
 
+    // case this msg is reply msg
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Messages parentMessage;
+    //case this msg is root msg
+    @OneToMany(mappedBy = "parentMessage")
+    private List<Messages> replyMessages;
     @CreationTimestamp
     @Column(name = "created_at" ,nullable = false)
     private Instant createdAt;

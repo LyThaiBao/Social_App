@@ -20,4 +20,7 @@ public class MessageResponse {
     private String senderName;
     private MessageType messageType;
     private String sentTime;
+    private Integer parentId;
+    private String parentMessageContent;
+    private String parentMessageSenderName;
 }
