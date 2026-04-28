@@ -48,6 +48,7 @@ public class MessageServiceImp implements MessageService{
     @Override
     public MessageResponse getMessageResponse(Messages messageSaved) {
         MessageResponse.MessageResponseBuilder messageResponse = MessageResponse.builder()
+                .id(messageSaved.getId())
                 .content(messageSaved.getContent())
                 .mediaUrl(messageSaved.getMediaUrl())
                 .sentTime(this.convertDateTime.convertInstant(messageSaved.getCreatedAt()))
@@ -61,6 +62,7 @@ public class MessageServiceImp implements MessageService{
             messageResponse.parentId(messageSaved.getParentMessage().getId());
             messageResponse.parentMessageContent(messageSaved.getParentMessage().getContent());
             messageResponse.parentMessageSenderName(messageSaved.getParentMessage().getSender().getFullName());
+            messageResponse.parentMediaType(messageSaved.getParentMessage().getType());
         }
         return messageResponse.build(); // built
     }

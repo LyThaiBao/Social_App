@@ -21,7 +21,8 @@ public class MessageMapper {
     public MessageResponse convertToMessageResponse(Messages message){
 
         MessageResponse.MessageResponseBuilder messageResponseBuilder =  MessageResponse.builder()
-                .messageType(message.getType())
+                .id(message.getId())
+                .messageType(message.getMediaType())
                 .senderId(message.getSender().getId())
                 .senderName(message.getSender().getFullName())
                 .content(message.getContent())
@@ -32,6 +33,7 @@ public class MessageMapper {
             messageResponseBuilder.parentId(message.getParentMessage().getId());
             messageResponseBuilder.parentMessageSenderName(message.getParentMessage().getSender().getFullName());
             messageResponseBuilder.parentMessageContent(message.getParentMessage().getContent());
+            messageResponseBuilder.parentMediaType(message.getParentMessage().getMediaType());
         }
         return messageResponseBuilder.build();
     }

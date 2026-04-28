@@ -46,9 +46,11 @@ public class Messages {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Messages parentMessage;
+
     //case this msg is root msg
     @OneToMany(mappedBy = "parentMessage")
     private List<Messages> replyMessages;
+
     @CreationTimestamp
     @Column(name = "created_at" ,nullable = false)
     private Instant createdAt;

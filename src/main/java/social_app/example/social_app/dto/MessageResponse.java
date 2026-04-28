@@ -12,7 +12,7 @@ import social_app.example.social_app.entity.MessageType;
 @NoArgsConstructor
 @Data
 public class MessageResponse {
-
+    private Integer id;
     private String content;
     private String mediaUrl;
     private Integer conversationId;
@@ -23,4 +23,5 @@ public class MessageResponse {
     private Integer parentId;
     private String parentMessageContent;
     private String parentMessageSenderName;
+    private MessageType parentMediaType;
 }
