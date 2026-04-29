@@ -34,6 +34,7 @@ public class MessageMapper {
             messageResponseBuilder.parentId(message.getParentMessage().getId());
             messageResponseBuilder.parentMessageSenderName(message.getParentMessage().getSender().getFullName());
             messageResponseBuilder.parentMessageContent(message.getParentMessage().getContent());
+            messageResponseBuilder.parentMessageType(message.getParentMessage().getType());
             messageResponseBuilder.parentMediaType(message.getParentMessage().getMediaType());
         }
         return messageResponseBuilder.build();

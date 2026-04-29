@@ -42,14 +42,14 @@ public class Messages {
     @JoinColumn(name = "conversation_id")
     private Conversations conversation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender")
     private Members sender;
 
 
 
     // case this msg is reply msg
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Messages parentMessage;
 

@@ -12,5 +12,6 @@ public interface MessageService {
     LastMessageResponse getLastMessageByConversationId(Integer conversationId);
     MessageResponse getMessageResponse(Messages message);
     Messages getMessageEntityById(Integer id);
+    MessageResponse recall(Integer id);
 
 }

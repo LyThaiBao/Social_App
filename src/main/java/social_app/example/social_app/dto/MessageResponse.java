@@ -26,6 +26,7 @@ public class MessageResponse {
     private String sentTime;
     private Integer parentId;
     private String parentMessageContent;
+    private MessageType parentMessageType;
     private String parentMessageSenderName;
     private MediaType parentMediaType;
 }

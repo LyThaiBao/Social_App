@@ -9,6 +9,7 @@ import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.mapper.MessageMapper;
 import social_app.example.social_app.repo.MessageRepository;
+import social_app.example.social_app.type.MessageType;
 import social_app.example.social_app.util.ConvertDateTime;
 
 import java.util.List;
@@ -71,5 +72,14 @@ public class MessageServiceImp implements MessageService{
     @Override
     public Messages getMessageEntityById(Integer id) {
         return this.messageRepository.findById(id).orElseThrow(()->new NotFoundResource("Not found parent message"));
+    }
+
+    @Override
+    public MessageResponse recall(Integer id) {
+        Messages message = this.messageRepository.findById(id).orElseThrow(()-> new NotFoundResource("Not found message"));
+        message.setType(MessageType.RECALLED);
+        this.messageRepository.save(message);
+
+        return this.messageMapper.convertToMessageResponse(message);
     }
 }

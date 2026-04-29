@@ -7,10 +7,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import social_app.example.social_app.dto.ChatMessage;
-import social_app.example.social_app.dto.MessageResponse;
-import social_app.example.social_app.dto.TypingRequest;
-import social_app.example.social_app.dto.TypingResponse;
+import social_app.example.social_app.dto.*;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
@@ -68,6 +65,15 @@ private final ConvertDateTime convertDateTime;
 //        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
     }
 
+    @MessageMapping("/chat.recall")
+    public void recallMessage(@Payload RecallMessageRequest recallMessageRequest){
+            log.info("ON RECALLED"+recallMessageRequest);
+        MessageResponse messageResponse = this.messageService.recall(recallMessageRequest.getId());
+        log.info(">>> MSG: "+messageResponse);
+        this.messagingTemplate.convertAndSend("/queue/recall-"+messageResponse.getConversationId(),messageResponse);
+
+
+    }
     @MessageMapping("/public.group.{groupId}")
     public void processPublicMessage(@Payload ChatMessage chatMessage, @DestinationVariable Integer groupId, Principal principal){
         //------------GET Principal-------------
