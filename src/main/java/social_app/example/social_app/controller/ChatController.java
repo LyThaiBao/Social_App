@@ -8,11 +8,14 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import social_app.example.social_app.dto.*;
+import social_app.example.social_app.dto.notification.NewMessage;
+import social_app.example.social_app.dto.notification.Notification;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.service.*;
+import social_app.example.social_app.type.NotificationType;
 import social_app.example.social_app.util.ConvertDateTime;
 
 import java.security.Principal;
@@ -28,7 +31,7 @@ private final ChatService chatService;
 private final MessageService messageService;
 private final UserService userService;
 private final MemberService memberService;
-private final ConvertDateTime convertDateTime;
+private final NotificationService notificationService;
 /*
  * Gửi tin nhắn cá nhân (1-1)
  * Client gửi đến: /app/chat.private
@@ -57,10 +60,13 @@ private final ConvertDateTime convertDateTime;
         // 1. Lưu tin nhắn vào DB thông qua Service
             Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
+            // thong bai tin nhan moi
+            Notification<NewMessage> notification = this.notificationService.newMessageResponse(messageResponse);
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
 //        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
             this.messagingTemplate.convertAndSend("/queue/private-" +messageResponse.getConversationId(),messageResponse);
+            this.messagingTemplate.convertAndSend("/queue/notification",notification);
         // 3. Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
 //        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
     }
@@ -121,8 +127,6 @@ private final ConvertDateTime convertDateTime;
         String destination = "/topic/leave." + groupId;//FE sub ==> /topic/group.groupId
         this.messagingTemplate.convertAndSend(destination,senderName);
     }
-
-
 
 
 
