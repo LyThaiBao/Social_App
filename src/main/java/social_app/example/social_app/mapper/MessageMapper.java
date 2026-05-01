@@ -44,6 +44,8 @@ public class MessageMapper {
         return LastMessageResponse.builder()
                 .content(message.getContent())
                 .messageType(message.getType())
+                .senderId(message.getSender().getId())
+                .senderName(message.getSender().getFullName())
                 .mediaType(message.getMediaType())
                 .lastTime(this.convertDateTime.convertInstant(message.getCreatedAt()))
                 .build();

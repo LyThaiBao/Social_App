@@ -8,6 +8,8 @@ import social_app.example.social_app.type.MessageType;
 @Data
 @Builder
 public class LastMessageResponse {
+    private String senderName;
+    private Integer senderId;
     private String content;
     private MessageType messageType;
     private MediaType mediaType;
