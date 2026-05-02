@@ -8,7 +8,7 @@ import social_app.example.social_app.type.FriendShipType;
 import java.time.Instant;
 
 @Entity
-@Table(name="friendShips",indexes = {@Index(name = "idx_requester_addresser",columnList = "requester_id,addresser_id",unique = true)})
+@Table(name="friend_ships",indexes = {@Index(name = "idx_requester_addresser",columnList = "requester_id,addresser_id",unique = true)})
 @Data
 @Builder
 @NoArgsConstructor

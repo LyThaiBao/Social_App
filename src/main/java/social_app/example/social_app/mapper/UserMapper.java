@@ -3,8 +3,8 @@ package social_app.example.social_app.mapper;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import social_app.example.social_app.dto.RegisterDTO;
-import social_app.example.social_app.dto.UserResponse;
+import social_app.example.social_app.dto.auth.RegisterDTO;
+import social_app.example.social_app.dto.usrAndMember.UserResponse;
 import social_app.example.social_app.entity.Users;
 
 

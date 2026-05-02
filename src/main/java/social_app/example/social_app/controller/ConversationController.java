@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import social_app.example.social_app.dto.ApiResponse;
-import social_app.example.social_app.dto.ConversationRequest;
-import social_app.example.social_app.dto.ConversationResponse;
-import social_app.example.social_app.service.ConversationService;
+import social_app.example.social_app.dto.conv.ConversationRequest;
+import social_app.example.social_app.dto.conv.ConversationResponse;
+import social_app.example.social_app.service.conv.ConversationService;
 
 import java.security.Principal;
 import java.util.List;

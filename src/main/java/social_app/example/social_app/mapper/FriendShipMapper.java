@@ -1,7 +1,7 @@
 package social_app.example.social_app.mapper;
 
 import org.springframework.stereotype.Component;
-import social_app.example.social_app.dto.FriendShipDetail;
+import social_app.example.social_app.dto.friendship.FriendShipDetail;
 import social_app.example.social_app.entity.FriendShips;
 
 @Component

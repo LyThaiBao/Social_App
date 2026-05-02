@@ -7,10 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import social_app.example.social_app.dto.ApiResponse;
-import social_app.example.social_app.dto.UploadResponse;
-import social_app.example.social_app.service.CloudService;
-
-import java.io.IOException;
+import social_app.example.social_app.dto.cloud.UploadResponse;
+import social_app.example.social_app.service.cloud.CloudService;
 
 @RestController
 @RequestMapping("/api/cloud")

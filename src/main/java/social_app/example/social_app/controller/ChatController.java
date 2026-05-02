@@ -7,16 +7,23 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import social_app.example.social_app.dto.*;
+import social_app.example.social_app.dto.msg.ChatMessage;
+import social_app.example.social_app.dto.msg.MessageResponse;
+import social_app.example.social_app.dto.msg.RecallMessageRequest;
 import social_app.example.social_app.dto.notification.NewMessage;
-import social_app.example.social_app.dto.notification.Notification;
+import social_app.example.social_app.dto.notification.NotificationResponse;
+import social_app.example.social_app.dto.typing.TypingRequest;
+import social_app.example.social_app.dto.typing.TypingResponse;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Messages;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
-import social_app.example.social_app.service.*;
-import social_app.example.social_app.type.NotificationType;
-import social_app.example.social_app.util.ConvertDateTime;
+import social_app.example.social_app.service.chat.ChatService;
+import social_app.example.social_app.service.member.MemberService;
+import social_app.example.social_app.service.msg.MessageService;
+import social_app.example.social_app.service.notifi.NotificationService;
+import social_app.example.social_app.service.participant.ParticipantService;
+import social_app.example.social_app.service.usr.UserService;
 
 import java.security.Principal;
 
@@ -31,7 +38,7 @@ private final ChatService chatService;
 private final MessageService messageService;
 private final UserService userService;
 private final MemberService memberService;
-private final NotificationService notificationService;
+//private final NotificationService notificationService;
 /*
  * Gửi tin nhắn cá nhân (1-1)
  * Client gửi đến: /app/chat.private
@@ -61,12 +68,12 @@ private final NotificationService notificationService;
             Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
             // thong bai tin nhan moi
-            Notification<NewMessage> notification = this.notificationService.newMessageResponse(messageResponse);
+//            NotificationResponse notificationResponse = this.notificationService.newMessageResponse(messageResponse);
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
 //        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
             this.messagingTemplate.convertAndSend("/queue/private-" +messageResponse.getConversationId(),messageResponse);
-            this.messagingTemplate.convertAndSend("/queue/notification",notification);
+            this.messagingTemplate.convertAndSend("/queue/notification", messageResponse);
         // 3. Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
 //        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
     }

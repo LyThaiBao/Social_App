@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import social_app.example.social_app.dto.*;
-import social_app.example.social_app.service.AuthService;
+import social_app.example.social_app.dto.auth.LoginRequest;
+import social_app.example.social_app.dto.auth.LoginResponse;
+import social_app.example.social_app.dto.auth.RegisterDTO;
+import social_app.example.social_app.dto.usrAndMember.UserResponse;
+import social_app.example.social_app.service.auth.AuthService;
 
 import java.net.URI;
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/auth")

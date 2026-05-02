@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import social_app.example.social_app.dto.ApiResponse;
-import social_app.example.social_app.dto.LastMessageResponse;
-import social_app.example.social_app.dto.MessageRequest;
-import social_app.example.social_app.dto.MessageResponse;
-import social_app.example.social_app.service.MessageService;
+import social_app.example.social_app.dto.msg.LastMessageResponse;
+import social_app.example.social_app.dto.msg.MessageRequest;
+import social_app.example.social_app.dto.msg.MessageResponse;
+import social_app.example.social_app.service.msg.MessageService;
 
 import java.util.List;
 

@@ -3,13 +3,17 @@ package social_app.example.social_app.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import social_app.example.social_app.dto.ApiResponse;
-import social_app.example.social_app.dto.FriendShipDetail;
-import social_app.example.social_app.dto.FriendShipRequest;
-import social_app.example.social_app.dto.FriendShipResponse;
-import social_app.example.social_app.service.FriendShipService;
+import social_app.example.social_app.dto.friendship.FriendShipDetail;
+import social_app.example.social_app.dto.friendship.FriendShipRequest;
+import social_app.example.social_app.dto.friendship.FriendShipResponse;
+import social_app.example.social_app.dto.notification.FriendRequest;
+import social_app.example.social_app.dto.notification.NotificationResponse;
+import social_app.example.social_app.service.friendship.FriendShipService;
+import social_app.example.social_app.service.notifi.NotificationService;
 
 import java.security.Principal;
 
@@ -17,13 +21,17 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/api/friendship")
 public class FriendShipController {
-
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final FriendShipService friendShipService;
+//    private final NotificationService notificationService;
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('MEMBER')")
     public ResponseEntity<ApiResponse<FriendShipResponse>> sendRequest(@RequestBody FriendShipRequest request,Principal principal){
-        System.out.println(">>> Request: "+1);
+        System.out.println(">>> Request: "+request);
         FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId(),principal);
+        //--------------create notification and send to user-------------
+//        NotificationResponse<FriendRequest> notificationResponse = this.notificationService.friendRequest(result);
+//        this.simpMessagingTemplate.convertAndSend("/queue/notification", notificationResponse);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Sent Success",result));
 
     }
@@ -45,7 +53,7 @@ public class FriendShipController {
 
     @PostMapping("/bothId")
     public ResponseEntity<ApiResponse<FriendShipDetail>> getByBothID(@RequestBody FriendShipRequest request){
-        System.out.println(">>> Request: "+4);
+        System.out.println(">>> Request: "+request);
 
         FriendShipDetail friendShipDetail = this.friendShipService.findBothId(request.getAddresserId(), request.getRequesterId());
         return ResponseEntity.ok().body(ApiResponse.success("Get Success",friendShipDetail));

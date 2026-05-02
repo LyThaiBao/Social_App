@@ -6,6 +6,7 @@
 
     import java.time.Instant;
     import java.time.LocalDate;
+    import java.util.List;
 
     @Entity
     @Table(name = "members")
@@ -28,6 +29,10 @@
         @OneToOne
         @JoinColumn(name = "user_id",unique = true)
         private Users user;
+
+        @OneToMany(mappedBy = "recipient")
+        @ToString.Exclude
+        private List<Notification> notificationList;
 
         @CreationTimestamp
         @Column(name = "create_at",nullable = false)

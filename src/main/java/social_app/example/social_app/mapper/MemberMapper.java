@@ -1,8 +1,8 @@
 package social_app.example.social_app.mapper;
 
 import org.springframework.stereotype.Component;
-import social_app.example.social_app.dto.MemberDetailResponse;
-import social_app.example.social_app.dto.MemberResponse;
+import social_app.example.social_app.dto.usrAndMember.MemberDetailResponse;
+import social_app.example.social_app.dto.usrAndMember.MemberResponse;
 import social_app.example.social_app.entity.Members;
 
 @Component

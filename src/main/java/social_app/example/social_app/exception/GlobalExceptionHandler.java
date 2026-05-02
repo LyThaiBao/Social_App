@@ -35,5 +35,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(notFoundResource.getMessage()));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> unDefineEx(Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("Loi khong xac dinh"));
+    }
+
 
 }
