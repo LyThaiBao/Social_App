@@ -1,5 +1,6 @@
     package social_app.example.social_app.entity;
 
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.*;
     import org.hibernate.annotations.CreationTimestamp;
@@ -25,9 +26,9 @@
         @Column(name = "birthday")
         private LocalDate birthDay;
 
-        @ToString.Exclude
         @OneToOne
         @JoinColumn(name = "user_id",unique = true)
+        @ToString.Exclude
         private Users user;
 
         @OneToMany(mappedBy = "recipient")

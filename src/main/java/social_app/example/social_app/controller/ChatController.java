@@ -38,7 +38,7 @@ private final ChatService chatService;
 private final MessageService messageService;
 private final UserService userService;
 private final MemberService memberService;
-//private final NotificationService notificationService;
+private final NotificationService notificationService;
 /*
  * Gửi tin nhắn cá nhân (1-1)
  * Client gửi đến: /app/chat.private
@@ -68,12 +68,13 @@ private final MemberService memberService;
             Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
             // thong bai tin nhan moi
-//            NotificationResponse notificationResponse = this.notificationService.newMessageResponse(messageResponse);
+            NotificationResponse<?> notificationResponse = this.notificationService.newMessageResponse(messageResponse);
+            log.info(">>>NOTIFI: "+notificationResponse);
         // 2. Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
 //        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
             this.messagingTemplate.convertAndSend("/queue/private-" +messageResponse.getConversationId(),messageResponse);
-            this.messagingTemplate.convertAndSend("/queue/notification", messageResponse);
+            this.messagingTemplate.convertAndSend("/queue/notification", notificationResponse);
         // 3. Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
 //        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
     }

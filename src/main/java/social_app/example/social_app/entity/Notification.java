@@ -32,6 +32,9 @@ public class Notification {
     @Column(name = "sender_id")
     private Integer senderId;
 
+    @Column(name = "sender_name")
+    private String senderName;
+
     // ID của đối tượng liên quan (Post ID, Comment ID, Friendship ID...)
     @Column(name = "reference_id")
     private Integer referenceId;

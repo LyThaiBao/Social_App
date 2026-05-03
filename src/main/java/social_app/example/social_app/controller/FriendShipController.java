@@ -23,15 +23,15 @@ import java.security.Principal;
 public class FriendShipController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final FriendShipService friendShipService;
-//    private final NotificationService notificationService;
+    private final NotificationService notificationService;
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('MEMBER')")
     public ResponseEntity<ApiResponse<FriendShipResponse>> sendRequest(@RequestBody FriendShipRequest request,Principal principal){
         System.out.println(">>> Request: "+request);
         FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId(),principal);
         //--------------create notification and send to user-------------
-//        NotificationResponse<FriendRequest> notificationResponse = this.notificationService.friendRequest(result);
-//        this.simpMessagingTemplate.convertAndSend("/queue/notification", notificationResponse);
+        NotificationResponse<?> notificationResponse = this.notificationService.friendRequest(result);
+        this.simpMessagingTemplate.convertAndSend("/queue/notification", notificationResponse);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Sent Success",result));
 
     }

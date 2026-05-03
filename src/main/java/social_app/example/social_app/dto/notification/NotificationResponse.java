@@ -9,8 +9,8 @@ import java.time.Instant;
 
 @Builder
 @Data
-public class NotificationResponse{
+public class NotificationResponse<T>{
     private NotificationType type;
-    private Notification notification;
+    private T payload;
     private Instant time;
 }

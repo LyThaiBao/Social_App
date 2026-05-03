@@ -40,6 +40,7 @@ public class Security {
                            .requestMatchers(HttpMethod.GET,"/api/conversations/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/messages/**").authenticated()
                            .requestMatchers(HttpMethod.GET,"/api/messages/**").authenticated()
+                           .requestMatchers(HttpMethod.POST,"/api/notifications").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/cloud/**").authenticated();
                 })
 
