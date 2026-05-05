@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 
 @Builder
 @Data
@@ -15,5 +14,5 @@ import java.time.Instant;
 public class FriendRequest {
     private Integer senderId;
     private String senderName;
-
+    
 }

@@ -120,14 +120,12 @@ public class FriendShipServiceImp implements FriendShipService {
         }
 
         if(friendShipDetail.getFriendShipType()!=null && friendShipDetail.getFriendShipType().equals(FriendShipType.DENIED)){
-
           String username = principal.getName();
           Users user = this.userService.findByUsername(username);
-            log.info(">>>> MemID: "+user.getMember().getId());
-            log.info(">>> AddrID: "+friendShipDetail.getAddresserId());
+          // in this case we had correct friendship so we just take it 1 way
             FriendShips friendShip = this.getFriendShipsSingleWay(friendShipDetail.getRequesterId(),friendShipDetail.getAddresserId());
+            // neu ng gui tung la ng nhan thi minh set lai cho dung
           if(Objects.equals(user.getMember().getId(),friendShipDetail.getAddresserId())){
-              log.info("Addresser: "+addresserId);
              Members addresser =  this.memberService.getMemberById(addresserId);
              Members requester = this.memberService.getMemberById(requesterId);
                 friendShip.setRequester(requester);
@@ -168,6 +166,9 @@ public FriendShipResponse accept(Integer addresserId,Integer requesterId) {
     this.friendShipRepository.save(friendShip);
     return FriendShipResponse
             .builder()
+            .senderId(requesterId)
+            .senderName("System")
+            .recipientId(addresserId)
             .message("Accepted Successful")
             .statusText("accepted")
             .build();

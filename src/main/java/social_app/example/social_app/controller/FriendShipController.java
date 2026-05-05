@@ -39,6 +39,9 @@ public class FriendShipController {
     @PostMapping("/accept")
     public ResponseEntity<ApiResponse<FriendShipResponse>> accept(@RequestBody FriendShipRequest request){
         FriendShipResponse result = this.friendShipService.accept(request.getAddresserId(),request.getRequesterId());
+        //--------------create notification and send to user-------------
+        NotificationResponse<?> notificationResponse = this.notificationService.friendAccepted(result);
+        this.simpMessagingTemplate.convertAndSend("/queue/notification", notificationResponse);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Accepted",result));
     }
 

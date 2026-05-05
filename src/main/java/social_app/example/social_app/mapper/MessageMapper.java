@@ -40,7 +40,7 @@ public class MessageMapper {
                 .senderId(message.getSender().getId())
                 .senderName(message.getSender().getFullName())
                 .mediaType(message.getMediaType())
-                .lastTime(this.convertDateTime.convertInstant(message.getCreatedAt()))
+                .lastTime(message.getCreatedAt())
                 .build();
     }
 }

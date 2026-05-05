@@ -5,6 +5,8 @@ import lombok.Data;
 import social_app.example.social_app.type.MediaType;
 import social_app.example.social_app.type.MessageType;
 
+import java.time.Instant;
+
 @Data
 @Builder
 public class LastMessageResponse {
@@ -13,5 +15,5 @@ public class LastMessageResponse {
     private String content;
     private MessageType messageType;
     private MediaType mediaType;
-    private String lastTime;
+    private Instant lastTime;
 }

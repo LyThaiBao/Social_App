@@ -10,6 +10,7 @@ public class NotificationMapper {
 
     public NotificationResponse<?> convertToNotificationResponse(Notification notification){
         return NotificationResponse.builder()
+                .id(notification.getId())
                 .time(notification.getCreatedAt())
                 .type(notification.getType())
                 .payload(FriendRequest.builder()

@@ -43,7 +43,10 @@ public class Notification {
     private String content;
 
     @Column(name = "is_read")
-    private boolean isRead = false;
+    private boolean isRead;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 
     @Column(name = "created_at")
     private Instant createdAt;

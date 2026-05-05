@@ -5,11 +5,16 @@ import social_app.example.social_app.dto.msg.MessageResponse;
 import social_app.example.social_app.dto.notification.FriendRequest;
 import social_app.example.social_app.dto.notification.NewMessage;
 import social_app.example.social_app.dto.notification.NotificationResponse;
+import social_app.example.social_app.entity.Notification;
 
 import java.util.List;
 
 public interface NotificationService {
     NotificationResponse<?> newMessageResponse(MessageResponse messageResponse);
     NotificationResponse<?> friendRequest(FriendShipResponse friendShipResponse);
+    NotificationResponse<?> friendAccepted(FriendShipResponse friendShipResponse);
     List<NotificationResponse<?>> getNotificationByMemberId(Integer memberId);
+    Integer countUnreadNotification(Integer memberId);
+    void markRead(Integer memberId);
+    Notification deleteNotification(Integer id);
 }
