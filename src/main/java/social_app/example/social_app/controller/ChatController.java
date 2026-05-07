@@ -44,47 +44,43 @@ private final NotificationService notificationService;
  * Client gửi đến: /app/chat.private
 */
         @MessageMapping("/chat.private") // chat 1;1
-    public void processPrivateMessage(@Payload ChatMessage chatMessage){
-            log.info(" >>> LOG LOG"+chatMessage);
+    public void processPrivateMessage(@Payload ChatMessage chatMessage,Principal principal){
+            log.info(" >>> Get Principal: "+principal);
+            log.info(">>> MESSAGE: "+chatMessage);
 
-         //Code chat chatType if(chatType == chat ) ==> send signal for Fe show icon typing ....
-
-            
         //------------GET Principal-------------
-//        if(principal == null){
-//            throw new AuthException("Unauthenticated");
-//        }
-//        String senderNam = principal.getName();
-//        log.info(">>>NAME: "+senderNam);
-//        Users sender = this.userService.findByUsername(senderName);
-//        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
+        if(principal == null){
+            throw new AuthException("Unauthenticated");
+        }
+        String senderName = principal.getName();
+        Users sender = this.userService.findByUsername(senderName);
+        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
 
         //BE ko tin sender FE gui len vi co the gia mao admin,=> dung principal
-        // Bcs login by User so Principal save user info
-        String senderName =  this.userService.findByUserId(chatMessage.getSenderId()).getUsername(); // tam thoi tin
         String destinationUser = this.chatService.getUsernameDest(chatMessage);
-
-        // 1. Lưu tin nhắn vào DB thông qua Service
+        log.info(">>> DESTINATION: "+destinationUser);
+        // Lưu tin nhắn vào DB thông qua Service
             Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
-            // thong bai tin nhan moi
+            // tao thong bao tin nhan moi
             NotificationResponse<?> notificationResponse = this.notificationService.newMessageResponse(messageResponse);
             log.info(">>>NOTIFI: "+notificationResponse);
-        // 2. Gửi tin nhắn đến người nhận
+        // Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
-//        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
-            this.messagingTemplate.convertAndSend("/queue/private-" +messageResponse.getConversationId(),messageResponse);
-            this.messagingTemplate.convertAndSend("/queue/notification", notificationResponse);
-        // 3. Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
-//        this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
+            this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
+        // Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
+            this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
+        // Gửi thông báo cho người nhận là có msg mới
+        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/notification",notificationResponse);
+            this.messagingTemplate.convertAndSendToUser(senderName,"/queue/notification",notificationResponse);
     }
 
     @MessageMapping("/chat.recall")
-    public void recallMessage(@Payload RecallMessageRequest recallMessageRequest){
+    public void recallMessage(@Payload RecallMessageRequest recallMessageRequest,Principal principal){
             log.info("ON RECALLED"+recallMessageRequest);
         MessageResponse messageResponse = this.messageService.recall(recallMessageRequest.getId());
         log.info(">>> MSG: "+messageResponse);
-        this.messagingTemplate.convertAndSend("/queue/recall-"+messageResponse.getConversationId(),messageResponse);
+        this.messagingTemplate.convertAndSendToUser(principal.getName(),"/queue/recall",messageResponse);
 
 
     }
