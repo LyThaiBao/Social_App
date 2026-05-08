@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class RecallMessageRequest {
     private Integer id;
+    private Integer conversationId;
 }

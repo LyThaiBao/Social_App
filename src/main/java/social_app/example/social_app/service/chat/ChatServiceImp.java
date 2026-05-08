@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.msg.ChatMessage;
+import social_app.example.social_app.dto.msg.RecallMessageRequest;
 import social_app.example.social_app.entity.*;
 import social_app.example.social_app.service.conv.ConversationService;
 import social_app.example.social_app.service.member.MemberService;
@@ -11,6 +12,7 @@ import social_app.example.social_app.service.msg.MessageService;
 import social_app.example.social_app.service.participant.ParticipantService;
 import social_app.example.social_app.service.usr.UserService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,19 +50,28 @@ public class ChatServiceImp implements ChatService {
 
     @Override
     public String getUsernameDest(ChatMessage chatMessage) {
-        // TAM THOI COMMENT DE RUN WS DE HON
-//        String username = principal.getName();
         Members owner = this.memberService.getMemberById(chatMessage.getSenderId());
-        log.info("Sender ID "+chatMessage.getSenderId());
-//        Users users = this.userService.findByUsername(username);
         List<Participants> participants = this.participantService.getByConversationId(chatMessage.getConversationId());
         List<Participants> participantsOfPartner =  participants.stream().filter(p -> !Objects.equals(p.getMember().getId(),owner.getId())).toList();
         if(!participantsOfPartner.isEmpty()){
-            Members member = participants.getFirst().getMember();
+            Members member = participantsOfPartner.getFirst().getMember();
             Users user = this.userService.findByUserId(member.getUser().getId());
             return user.getUsername();
         }
+        return  null;
+    }
 
+    @Override
+    public String getUsernameDest(RecallMessageRequest recallMessageRequest, Principal principal) {
+        Users user = this.userService.findByUsername(principal.getName());
+        Members owner = this.memberService.getMemberById(user.getMember().getId());
+        List<Participants> participants = this.participantService.getByConversationId(recallMessageRequest.getConversationId());
+        List<Participants> participantsOfPartner =  participants.stream().filter(p -> !Objects.equals(p.getMember().getId(),owner.getId())).toList();
+        if(!participantsOfPartner.isEmpty()){
+            Members member = participantsOfPartner.getFirst().getMember();
+            Users partner = this.userService.findByUserId(member.getUser().getId());
+            return partner.getUsername();
+        }
         return  null;
     }
 }
