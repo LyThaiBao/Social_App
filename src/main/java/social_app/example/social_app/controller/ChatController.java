@@ -45,45 +45,38 @@ private final NotificationService notificationService;
 */
         @MessageMapping("/chat.private") // chat 1;1
     public void processPrivateMessage(@Payload ChatMessage chatMessage,Principal principal){
-            log.info(" >>> Get Principal: "+principal);
-            log.info(">>> MESSAGE: "+chatMessage);
-
         //------------GET Principal-------------
         if(principal == null){
             throw new AuthException("Unauthenticated");
         }
         String senderName = principal.getName();
         Users sender = this.userService.findByUsername(senderName);
-        chatMessage.setSenderId(sender.getId()); // set bang senderID lay tu principal
+        chatMessage.setSenderId(sender.getMember().getId()); // auth use user --> all req use member
 
-        //BE ko tin sender FE gui len vi co the gia mao admin,=> dung principal
         String destinationUser = this.chatService.getUsernameDest(chatMessage);
-        log.info(">>> DESTINATION: "+destinationUser);
         // Lưu tin nhắn vào DB thông qua Service
             Messages messageSaved = this.chatService.saveMessage(chatMessage);
             MessageResponse messageResponse = this.messageService.getMessageResponse(messageSaved);
             // tao thong bao tin nhan moi
             NotificationResponse<?> notificationResponse = this.notificationService.newMessageResponse(messageResponse);
-            log.info(">>>NOTIFI: "+notificationResponse);
         // Gửi tin nhắn đến người nhận
         // Đường dẫn: /user/{recipientUsername}/queue/private
             this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
         // Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
             this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
         // Gửi thông báo cho người nhận là có msg mới
-        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/notification",notificationResponse);
+            this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/notification",notificationResponse);
             this.messagingTemplate.convertAndSendToUser(senderName,"/queue/notification",notificationResponse);
     }
 
     @MessageMapping("/chat.recall")
     public void recallMessage(@Payload RecallMessageRequest recallMessageRequest,Principal principal){
-            log.info("ON RECALLED"+recallMessageRequest);
+        String destinationUser = this.chatService.getUsernameDest(recallMessageRequest,principal);
         MessageResponse messageResponse = this.messageService.recall(recallMessageRequest.getId());
-        log.info(">>> MSG: "+messageResponse);
         this.messagingTemplate.convertAndSendToUser(principal.getName(),"/queue/recall",messageResponse);
-
-
+        this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/recall",messageResponse);
     }
+
     @MessageMapping("/public.group.{groupId}")
     public void processPublicMessage(@Payload ChatMessage chatMessage, @DestinationVariable Integer groupId, Principal principal){
         //------------GET Principal-------------
