@@ -9,8 +9,8 @@ import java.sql.Date;
 @Component
 public class JwtUtil {
     private String SECRET_KEY = "lythaibaotimyssfsfjfjsjfksdjfkdsfksdjfkdjfkdsjfksjfwerrerfsdfsdf";
-    private long JwtExpiration= 1000*60*10;
-    public String createToken(String username){
+
+    public String createToken(String username,long JwtExpiration){
         return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis()+JwtExpiration))
@@ -19,6 +19,8 @@ public class JwtUtil {
                 .compact();
 
     }
+
+
     public String extractUsername(String token){
         return Jwts.parser()
                 .setSigningKey(SECRET_KEY)
