@@ -1,22 +1,20 @@
 package social_app.example.social_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import social_app.example.social_app.dto.*;
-import social_app.example.social_app.dto.auth.LoginRequest;
-import social_app.example.social_app.dto.auth.LoginResponse;
-import social_app.example.social_app.dto.auth.RegisterDTO;
+import social_app.example.social_app.dto.auth.*;
 import social_app.example.social_app.dto.usrAndMember.UserResponse;
 import social_app.example.social_app.service.auth.AuthService;
 
 import java.net.URI;
+import java.security.Principal;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -36,8 +34,23 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest){
+        log.info(">>>LOGIN: "+loginRequest);
         LoginResponse response = this.authService.login(loginRequest);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Login Success",response));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<LogoutResponse>> logout(@RequestBody LogoutRequest request){
+        LogoutResponse response = this.authService.logout(request.getRefreshToken());
+        return ResponseEntity.ok().body(ApiResponse.success("Logout success",response));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<RefreshTokenResp>> refreshToken(@RequestBody RefreshTokenRequ request){
+        log.info("CALL REFRESH >>>> ");
+        RefreshTokenResp response = this.authService.refreshToken(request);
+        return  ResponseEntity.ok().body(ApiResponse.success("Refresh success",response));
+    }
+
 
 }
