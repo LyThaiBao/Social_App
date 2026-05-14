@@ -2,10 +2,7 @@ package social_app.example.social_app.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -30,5 +27,6 @@ public class RefreshToken {
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private Users users;
 }

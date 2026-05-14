@@ -61,7 +61,7 @@ public class AuthServiceImp implements AuthService {
             // returned UserDetails
             //------------------Take user name to provide for create token-----------
             Users users = this.userService.findByUsername(request.getUsername());
-            long accessExpirationMillis = 1000*60*1;
+            long accessExpirationMillis = 1000*60*10;
             long refreshExpirationMillis = 24*7*60*60*1000;
             String accessToken = this.jwtUtil.createToken(users.getUsername(),accessExpirationMillis);
             String refreshToken = this.jwtUtil.createToken(users.getUsername(),refreshExpirationMillis);
@@ -96,14 +96,16 @@ public class AuthServiceImp implements AuthService {
     }
 
     @Override
-//    @Transactional
+    @Transactional
     public RefreshTokenResp refreshToken(RefreshTokenRequ request) {
+        log.info(">>>INPUT TOKEN: "+request.getRefreshToken());
         boolean isValid = this.jwtUtil.isValidateToken(request.getRefreshToken());
         if(!isValid){
             throw new AuthException("Refresh token invalid or expired");
         }
        RefreshToken checkRefreshToken = this.tokenService.getRefreshToken(request.getRefreshToken()); // throw not found token exception
-        long accessExpirationMillis = 1000*60;
+        log.info(">>>DB TOKEN: "+checkRefreshToken);
+        long accessExpirationMillis = 1000*60*10;
         long refreshExpirationMillis = 24*7*60*60*1000;
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
         String accessToken = this.jwtUtil.createToken(username,accessExpirationMillis);
@@ -111,15 +113,17 @@ public class AuthServiceImp implements AuthService {
         Instant expired = Instant.now().plusMillis(refreshExpirationMillis);
 
         //-----------Delete old refresh token--------------
-        this.tokenService.remove(checkRefreshToken);
+//        this.tokenService.remove(checkRefreshToken);
         //----------Create and save new Refresh token------
-        Users user = this.userService.findByUsername(username);
-        RefreshToken refreshTokenDb = RefreshToken.builder()
-                .users(user)
-                .refreshToken(refreshToken)
-                .expired(expired)
-                .build();
-        this.tokenService.save(refreshTokenDb);
+//        Users user = this.userService.findByUsername(username);
+//        RefreshToken refreshTokenDb = RefreshToken.builder()
+//                .users(user)
+//                .refreshToken(refreshToken)
+//                .expired(expired)
+//                .build();
+        checkRefreshToken.setRefreshToken(refreshToken);
+        checkRefreshToken.setExpired(expired);
+        this.tokenService.save(checkRefreshToken);
         return RefreshTokenResp.builder()
                 .refreshToken(refreshToken)
                 .accessToken(accessToken)

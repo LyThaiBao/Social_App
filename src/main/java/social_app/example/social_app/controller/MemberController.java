@@ -20,6 +20,7 @@ public class MemberController {
 
     @GetMapping("/search")
     public  ResponseEntity<ApiResponse<List<MemberResponse>>> search(@RequestParam String keyword){
+        log.info(">>>SEARCH: "+keyword);
         List<MemberResponse> memberResponseList = this.memberService.search(keyword);
         return ResponseEntity.ok().body(ApiResponse.success("Get By Full Name Success",memberResponseList));
     }
