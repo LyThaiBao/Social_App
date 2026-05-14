@@ -37,11 +37,13 @@ public class Security {
                            .requestMatchers(HttpMethod.GET,"/api/me/**").permitAll()
                            .requestMatchers(HttpMethod.GET,"/api/members/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/conversations/**").authenticated()
-                           .requestMatchers(HttpMethod.GET,"/api/conversations/**").authenticated()
+                           .requestMatchers(HttpMethod.GET,"/api/conversations/**").authenticated() 
                            .requestMatchers(HttpMethod.POST,"/api/messages/**").authenticated()
                            .requestMatchers(HttpMethod.GET,"/api/messages/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/notifications/**").authenticated()
                            .requestMatchers(HttpMethod.DELETE,"/api/notifications/**").authenticated()
+                           .requestMatchers(HttpMethod.POST,"/api/posts/**").authenticated()
+                           .requestMatchers(HttpMethod.GET,"/api/posts/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/cloud/**").authenticated();
                 })
 
