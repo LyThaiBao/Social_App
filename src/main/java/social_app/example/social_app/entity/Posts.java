@@ -29,7 +29,7 @@ public class Posts {
     private String mediaUrl;
 
     @Column(name = "status")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private PostStatus status;
 
     @Column(name = "create_at")

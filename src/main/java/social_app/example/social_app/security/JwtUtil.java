@@ -1,5 +1,6 @@
 package social_app.example.social_app.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -22,11 +23,12 @@ public class JwtUtil {
 
 
     public String extractUsername(String token){
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+           return Jwts.parser()
+                   .setSigningKey(SECRET_KEY)
+                   .parseClaimsJws(token)
+                   .getBody()
+                   .getSubject();
+
     }
 
     public boolean isValidateToken(String token){
