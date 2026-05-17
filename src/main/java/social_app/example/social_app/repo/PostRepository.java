@@ -3,6 +3,7 @@ package social_app.example.social_app.repo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,5 +22,9 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
             "p.member.id in (select f.addresser.id from FriendShips  f where f.requester.id = :myId and f.status = 'ACCEPTED' )) and " +
             "p.status != 'PRIVATE') order by p.createAt desc ")
     Page<Posts> findNewsfeedPosts(@Param("myId") Integer myId, Pageable pageable);// auto set limit, size we just give pageable
+
+    @Modifying
+    @Query("update Posts p set p.status = 'DELETED' where p.id = :id and p.status != 'DELETED'")
+    int softDelete(@Param("id") Integer id);
 
 }

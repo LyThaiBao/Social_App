@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 @Entity
-@Table(name = "posts")
+@Table(name = "likes")
 @Data
 @Builder
 @AllArgsConstructor

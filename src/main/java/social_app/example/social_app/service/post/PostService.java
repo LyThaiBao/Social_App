@@ -10,4 +10,5 @@ import java.util.List;
 public interface PostService {
     PostResponse createPost(PostRequest request,Principal principal);
     Page<PostResponse> getNewPosts(Principal principal, int pageNum, int size);
+    void deletePost(Integer id);
 }

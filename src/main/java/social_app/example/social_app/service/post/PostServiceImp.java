@@ -12,6 +12,7 @@ import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Posts;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.ForbiddenException;
+import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.mapper.PostMapper;
 import social_app.example.social_app.repo.PostRepository;
 import social_app.example.social_app.service.member.MemberService;
@@ -54,5 +55,13 @@ public class PostServiceImp implements PostService{
         Pageable pageable = (Pageable) PageRequest.of(pageNum,size);
         Page<Posts> postsPage = this.postRepository.findNewsfeedPosts(user.getMember().getId(),pageable);
         return postsPage.map(this.postMapper::convertToPostResponse);
+    }
+
+    @Override
+    public void deletePost(Integer id) {
+        int rowDelete = this.postRepository.softDelete(id);
+        if(rowDelete == 0){
+            throw new NotFoundResource("Not found post with id "+id);
+        }
     }
 }
