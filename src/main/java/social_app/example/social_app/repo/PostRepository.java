@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import social_app.example.social_app.dto.post.PostRequest;
 import social_app.example.social_app.entity.Posts;
 
 import java.util.List;
@@ -20,11 +21,12 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
             "p.status = 'PUBLIC' or " +
             "((p.member.id in (select f.requester.id from FriendShips f where f.addresser.id = :myId and f.status = 'ACCEPTED') or " +
             "p.member.id in (select f.addresser.id from FriendShips  f where f.requester.id = :myId and f.status = 'ACCEPTED' )) and " +
-            "p.status != 'PRIVATE') order by p.createAt desc ")
+            "p.status not in ('DELETE','PRIVATE')) order by p.createAt desc ")
     Page<Posts> findNewsfeedPosts(@Param("myId") Integer myId, Pageable pageable);// auto set limit, size we just give pageable
 
     @Modifying
     @Query("update Posts p set p.status = 'DELETED' where p.id = :id and p.status != 'DELETED'")
     int softDelete(@Param("id") Integer id);
+
 
 }

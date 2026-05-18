@@ -44,6 +44,8 @@ public class Security {
                            .requestMatchers(HttpMethod.DELETE,"/api/notifications/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/posts/**").authenticated()
                            .requestMatchers(HttpMethod.GET,"/api/posts/**").authenticated()
+                           .requestMatchers(HttpMethod.DELETE,"/api/posts/**").authenticated()
+                           .requestMatchers(HttpMethod.PATCH,"/api/posts/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/cloud/**").authenticated();
                 })
 

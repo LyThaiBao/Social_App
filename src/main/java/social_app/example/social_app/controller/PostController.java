@@ -1,8 +1,11 @@
 package social_app.example.social_app.controller;
 
+import com.cloudinary.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import social_app.example.social_app.dto.ApiResponse;
@@ -40,6 +43,12 @@ public class PostController {
     public ResponseEntity<ApiResponse<?>> softDeletePost(@PathVariable Integer id){
         this.postService.deletePost(id);
         return ResponseEntity.ok().body(ApiResponse.success("Delete Success",""));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<PostResponse>> modifyPost(@PathVariable Integer id,@RequestBody PostRequest request){
+        PostResponse response = this.postService.modifyPost(id,request);
+        return ResponseEntity.ok().body(ApiResponse.success("Path success",response));
     }
 
 

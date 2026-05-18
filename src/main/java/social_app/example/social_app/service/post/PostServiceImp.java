@@ -1,5 +1,6 @@
 package social_app.example.social_app.service.post;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -58,10 +59,27 @@ public class PostServiceImp implements PostService{
     }
 
     @Override
+    @Transactional
     public void deletePost(Integer id) {
         int rowDelete = this.postRepository.softDelete(id);
         if(rowDelete == 0){
             throw new NotFoundResource("Not found post with id "+id);
         }
+    }
+
+    @Override
+    @Transactional
+    public PostResponse modifyPost(Integer id,PostRequest request) {
+        Posts post = this.postRepository.findById(id).orElseThrow(() -> new NotFoundResource("Not found post with id "+id));
+        if(request.getContent()!=null){
+            post.setContent(request.getContent());
+        }
+        if(request.getStatus()!=null){
+            post.setStatus(request.getStatus());
+        }
+        if(request.getMediaUrl()!=null){
+            post.setMediaUrl(request.getMediaUrl());
+        }
+        return this.postMapper.convertToPostResponse(post);
     }
 }
