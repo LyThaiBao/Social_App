@@ -30,7 +30,7 @@ public class Posts {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private PostStatus status;
+    private PostStatus status = PostStatus.PUBLIC;
 
     @Column(name = "create_at")
     private Instant createAt;
