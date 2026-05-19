@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeToggleResponse {
+public class LikeResponse {
+    private Integer postId;
     private boolean liked;
     private Long totalLikeOfPost;
 }

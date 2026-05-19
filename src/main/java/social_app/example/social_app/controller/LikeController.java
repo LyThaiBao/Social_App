@@ -3,12 +3,9 @@ package social_app.example.social_app.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import social_app.example.social_app.dto.ApiResponse;
-import social_app.example.social_app.dto.like.LikeToggleResponse;
+import social_app.example.social_app.dto.like.LikeResponse;
 import social_app.example.social_app.service.like.LikeService;
 
 import java.security.Principal;
@@ -18,9 +15,15 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
-    @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<LikeToggleResponse>> toggleLike(@PathVariable Integer postId, Principal principal){
-        LikeToggleResponse response = this.likeService.toggleLike(postId,principal);
+    @GetMapping("/toggleLike/{postId}")
+    public ResponseEntity<ApiResponse<LikeResponse>> toggleLike(@PathVariable Integer postId, Principal principal){
+        LikeResponse response = this.likeService.toggleLike(postId,principal);
         return ResponseEntity.ok().body(ApiResponse.success("Toggle success",response));
+    }
+
+    @PostMapping("/{postId}")
+    public ResponseEntity<ApiResponse<LikeResponse>> getLikeOfPost(@PathVariable Integer postId, Principal principal){
+        LikeResponse response = this.likeService.getLikesOfPost(postId,principal);
+        return ResponseEntity.ok().body(ApiResponse.success("Get Success",response));
     }
 }
