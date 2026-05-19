@@ -82,4 +82,9 @@ public class PostServiceImp implements PostService{
         }
         return this.postMapper.convertToPostResponse(post);
     }
+
+    @Override
+    public Posts getPostEntity(Integer id) {
+        return this.postRepository.findById(id).orElseThrow(()-> new NotFoundResource("Not found post with id "+id));
+    }
 }

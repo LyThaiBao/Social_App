@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import social_app.example.social_app.type.LikeStatus;
 
 import java.time.Instant;
 
@@ -28,10 +29,11 @@ public class Likes {
     @ManyToOne
     private Posts post;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private LikeStatus status = LikeStatus.UNLIKE;
 
     @Column(name = "create_at")
     private Instant createAt;
-
-
 
 }
