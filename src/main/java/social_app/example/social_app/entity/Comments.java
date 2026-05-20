@@ -32,8 +32,15 @@ public class Comments {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "create_at")
-    private Instant createAt;
+    @Column(name = "is_deleted)")
+    private boolean isDeleted = false;
 
+    @Column(name = "create_at")
+    private Instant createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = Instant.now();
+    }
 
 }

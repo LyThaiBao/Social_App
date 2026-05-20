@@ -48,6 +48,8 @@ public class Security {
                            .requestMatchers(HttpMethod.PATCH,"/api/posts/**").authenticated()
                            .requestMatchers(HttpMethod.GET,"/api/likes/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/likes/**").authenticated()
+                           .requestMatchers(HttpMethod.POST,"/api/comments/**").authenticated()
+                           .requestMatchers(HttpMethod.GET,"/api/comments/**").authenticated()
                            .requestMatchers(HttpMethod.POST,"/api/cloud/**").authenticated();
                 })
 
