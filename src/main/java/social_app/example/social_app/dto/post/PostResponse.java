@@ -15,8 +15,11 @@ import java.time.Instant;
 public class PostResponse {
     private Integer id;
     private Integer memberId;
+    private String memberName;
     private String content;
     private String mediaUrl;
+    private Long totalLikes;
+    private boolean isLiked;
     private PostStatus status;
     private Instant createAt;
 }

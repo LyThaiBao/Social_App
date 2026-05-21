@@ -28,5 +28,15 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
     @Query("update Posts p set p.status = 'DELETED' where p.id = :id and p.status != 'DELETED'")
     int softDelete(@Param("id") Integer id);
 
+    @Query("select p.totalLikes from Posts  p where p.id =:postId")
+    Long getTotalLikes(@Param("postId") Integer postId);
+
+    @Modifying
+    @Query("update Posts  p set p.totalLikes=(p.totalLikes+1) where p.id = :postId")
+    int incrementLike(@Param("postId") Integer postId);
+
+    @Modifying
+    @Query("update Posts  p set p.totalLikes=(p.totalLikes-1) where p.id = :postId")
+    int reduceLike(@Param("postId") Integer postId);
 
 }

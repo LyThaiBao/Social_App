@@ -14,7 +14,7 @@ public class CommentMapper {
                 .postId(comment.getPost().getId())
                 .content(comment.getContent())
                 .isDeleted(comment.isDeleted())
-                .createdAt(comment.getCreateAt())
+                .createdAt(comment.getCreatedAt())
                 .build();
     }
 }

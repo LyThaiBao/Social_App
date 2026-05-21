@@ -29,8 +29,13 @@ public class Posts {
     private String mediaUrl;
 
     @Column(name = "status")
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     private PostStatus status = PostStatus.PUBLIC;
+
+    @Column(name = "total_like")
+    @Builder.Default
+    private Long totalLikes = 0L;
 
     @Column(name = "create_at")
     private Instant createAt;
