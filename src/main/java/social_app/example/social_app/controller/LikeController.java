@@ -11,19 +11,19 @@ import social_app.example.social_app.service.like.LikeService;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/likes")
+@RequestMapping("/api/posts/{postId}/likes")
 @RequiredArgsConstructor
 public class LikeController {
     private final LikeService likeService;
-    @GetMapping("/toggleLike/{postId}")
+    @PostMapping
     public ResponseEntity<ApiResponse<LikeResponse>> toggleLike(@PathVariable Integer postId, Principal principal){
         LikeResponse response = this.likeService.toggleLike(postId,principal);
         return ResponseEntity.ok().body(ApiResponse.success("Toggle success",response));
     }
 
-    @PostMapping("/{postId}")
-    public ResponseEntity<ApiResponse<LikeResponse>> getLikeOfPost(@PathVariable Integer postId, Principal principal){
-        LikeResponse response = this.likeService.getLikesOfPost(postId,principal);
-        return ResponseEntity.ok().body(ApiResponse.success("Get Success",response));
-    }
+//    @GetMapping
+//    public ResponseEntity<ApiResponse<LikeResponse>> getLikeOfPost(@PathVariable Integer postId, Principal principal){
+//        LikeResponse response = this.likeService.getLikesOfPost(postId,principal);
+//        return ResponseEntity.ok().body(ApiResponse.success("Get Success",response));
+//    }
 }

@@ -13,6 +13,8 @@ public class PostMapper {
                 .content(post.getContent())
                 .mediaUrl(post.getMediaUrl())
                 .memberId(post.getMember().getId())
+                .memberName(post.getMember().getFullName())
+                .totalLikes(post.getTotalLikes())
                 .status(post.getStatus())
                 .createAt(post.getCreateAt())
                 .build();
