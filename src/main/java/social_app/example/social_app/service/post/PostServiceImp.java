@@ -40,12 +40,9 @@ public class PostServiceImp implements PostService{
     private final LikeRepository likeRepository;
     @Override
     public PostResponse createPost(PostRequest request,Principal principal) {
-        Members member = this.memberService.getMemberById(request.getMemberId());
+
         Users user = this.userService.findByUsername(principal.getName());
-        Integer myId = this.memberService.getMemberById(user.getMember().getId()).getId();
-        if(!Objects.equals(myId,request.getMemberId())){
-            throw new ForbiddenException("You do not have permission");
-        }
+        Members member = this.memberService.getMemberById(user.getMember().getId());
         Posts post = Posts.builder()
                 .member(member)
                 .content(request.getContent())
