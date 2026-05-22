@@ -11,7 +11,6 @@ import social_app.example.social_app.type.PostStatus;
 @NoArgsConstructor
 @Data
 public class PostRequest {
-    private Integer memberId;
     private String content;
     private String mediaUrl;
     private PostStatus status;
