@@ -17,16 +17,16 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
     @Query("select p from Posts p where p.member.id = :myId")
     List<Posts> findAllByMemberId(@Param("myId") Integer memberId);
 
-    @Query("select p from Posts p where p.member.id = :myId or " +
+    @Query("select p from Posts p where p.member.id = :myId and p.status != 'DELETED' or " +
             "p.status = 'PUBLIC' or " +
             "((p.member.id in (select f.requester.id from FriendShips f where f.addresser.id = :myId and f.status = 'ACCEPTED') or " +
             "p.member.id in (select f.addresser.id from FriendShips  f where f.requester.id = :myId and f.status = 'ACCEPTED' )) and " +
-            "p.status not in ('DELETE','PRIVATE')) order by p.createAt desc ")
+            "p.status not in ('DELETED','PRIVATE')) order by p.createdAt desc ")
     Page<Posts> findNewsfeedPosts(@Param("myId") Integer myId, Pageable pageable);// auto set limit, size we just give pageable
 
     @Modifying
-    @Query("update Posts p set p.status = 'DELETED' where p.id = :id and p.status != 'DELETED'")
-    int softDelete(@Param("id") Integer id);
+    @Query("update Posts p set p.status = 'DELETED' where p.id = :id and p.member.id=:memberId and p.status != 'DELETED'")
+    int softDelete(@Param("id") Integer id,@Param("memberId") Integer memberId);
 
     @Query("select p.totalLikes from Posts  p where p.id =:postId")
     Long getTotalLikes(@Param("postId") Integer postId);

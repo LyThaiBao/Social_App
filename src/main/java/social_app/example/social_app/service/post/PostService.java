@@ -11,7 +11,7 @@ import java.security.Principal;
 public interface PostService {
     PostResponse createPost(PostRequest request,Principal principal);
     Page<PostResponse> getNewPosts(Principal principal, int pageNum, int size);
-    void deletePost(Integer id);
+    void deletePost(Integer id,Principal principal);
     PostResponse modifyPost(Integer id,PostRequest request);
     Posts getPostEntity(Integer id);
     void incrementLike(Integer postId);

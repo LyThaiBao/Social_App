@@ -12,11 +12,12 @@ public class PostMapper {
                 .id(post.getId())
                 .content(post.getContent())
                 .mediaUrl(post.getMediaUrl())
+                .mediaType(post.getMediaType())
                 .memberId(post.getMember().getId())
                 .memberName(post.getMember().getFullName())
                 .totalLikes(post.getTotalLikes())
                 .status(post.getStatus())
-                .createAt(post.getCreateAt())
+                .createdAt(post.getCreatedAt())
                 .build();
     }
 }

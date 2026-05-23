@@ -2,6 +2,7 @@ package social_app.example.social_app.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import social_app.example.social_app.type.MediaType;
 import social_app.example.social_app.type.PostStatus;
 
 import java.time.Instant;
@@ -28,6 +29,9 @@ public class Posts {
     @Column(name = "media_url")
     private String mediaUrl;
 
+    @Column(name = "media_type")
+    private MediaType mediaType;
+
     @Column(name = "status")
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -38,10 +42,10 @@ public class Posts {
     private Long totalLikes = 0L;
 
     @Column(name = "create_at")
-    private Instant createAt;
+    private Instant createdAt;
 
     @PrePersist
     protected void onCreate(){
-        this.createAt = Instant.now();
+        this.createdAt = Instant.now();
     }
 }

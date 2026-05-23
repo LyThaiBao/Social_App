@@ -40,8 +40,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<?>> softDeletePost(@PathVariable Integer id){
-        this.postService.deletePost(id);
+    public ResponseEntity<ApiResponse<?>> softDeletePost(@PathVariable Integer id,Principal principal){
+        this.postService.deletePost(id,principal);
         return ResponseEntity.ok().body(ApiResponse.success("Delete Success",""));
     }
 
