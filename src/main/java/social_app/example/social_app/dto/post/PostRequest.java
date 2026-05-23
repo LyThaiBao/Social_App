@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import social_app.example.social_app.type.MediaType;
 import social_app.example.social_app.type.PostStatus;
 
 @Builder
@@ -13,5 +14,6 @@ import social_app.example.social_app.type.PostStatus;
 public class PostRequest {
     private String content;
     private String mediaUrl;
+    private MediaType mediaType;
     private PostStatus status;
 }

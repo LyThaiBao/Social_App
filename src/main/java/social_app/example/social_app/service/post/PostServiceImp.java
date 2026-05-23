@@ -48,6 +48,7 @@ public class PostServiceImp implements PostService{
                 .content(request.getContent())
                 .status(request.getStatus())
                 .mediaUrl(request.getMediaUrl())
+                .mediaType(request.getMediaType())
                 .build();
         log.info(">>>POST: "+post);
         this.postRepository.save(post);
@@ -61,7 +62,7 @@ public class PostServiceImp implements PostService{
         Page<Posts> postsPage = this.postRepository.findNewsfeedPosts(user.getMember().getId(),pageable);
         List<Integer> listId = postsPage.getContent().stream().map(Posts::getId).toList();
         Set<Integer> likedPostIds = this.likeRepository.findLikedPostIds(user.getMember().getId(),listId);
-
+        
         return postsPage.map(post->{
             PostResponse response = postMapper.convertToPostResponse(post);
            response.setLiked(likedPostIds.contains(post.getId()));
@@ -71,10 +72,12 @@ public class PostServiceImp implements PostService{
 
     @Override
     @Transactional
-    public void deletePost(Integer id) {
-        int rowDelete = this.postRepository.softDelete(id);
+    public void deletePost(Integer id,Principal principal) {
+        String currentUser = principal.getName();
+        Users user = this.userService.findByUsername(currentUser);
+        int rowDelete = this.postRepository.softDelete(id,user.getMember().getId());
         if(rowDelete == 0){
-            throw new NotFoundResource("Not found post with id "+id);
+            throw new NotFoundResource("Failure delete post "+id);
         }
     }
 
