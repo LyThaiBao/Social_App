@@ -11,6 +11,7 @@ public class CommentMapper {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .memberId(comment.getMember().getId())
+                .memberName(comment.getMember().getFullName())
                 .postId(comment.getPost().getId())
                 .content(comment.getContent())
                 .isDeleted(comment.isDeleted())

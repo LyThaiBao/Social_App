@@ -10,6 +10,7 @@ import java.time.Instant;
 public class CommentResponse {
     private Integer id;
     private Integer memberId;
+    private String memberName;
     private Integer postId;
     private String content;
     private boolean isDeleted;
