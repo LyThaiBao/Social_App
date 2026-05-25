@@ -43,11 +43,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
+        log.info(">>>Inbound channel");
         registration.interceptors(new ChannelInterceptor() {
             @Override
             public @Nullable Message<?> preSend(Message<?> message, MessageChannel channel) {
-                log.info("Inbound chanel >>> "+message);
-
                 //accessor check header of stomp
                 StompHeaderAccessor accessor = StompHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 assert accessor != null;

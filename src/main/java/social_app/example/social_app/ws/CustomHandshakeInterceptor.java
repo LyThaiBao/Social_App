@@ -18,14 +18,12 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        log.info(">>>>>>>> LOG HERE");
         if(request instanceof ServletServerHttpRequest servletRequest){ // check and cast
+            log.info(">>>Hand shake");
             HttpServletRequest req = servletRequest.getServletRequest();
            Cookie[] cookies  = req.getCookies();
            for (Cookie cookie : cookies){
                if(Objects.equals(cookie.getName(), "accessToken")){
-                   log.info(">>>COOKIE: "+cookie);
-                   log.info(">>>TOKEN IN COOKIE: "+cookie.getValue());
                    attributes.put("token",cookie.getValue()); // attach to SessionAttributes
                }
            }
