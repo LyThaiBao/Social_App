@@ -39,7 +39,7 @@ public class CommentController {
 //    public ResponseEntity<ApiResponse<String>> softDeleteComment(@PathVariable Integer postId, @PathVariable Integer commentId,Principal principal){
 //        String result = this.commentService.deleteComment(postId,commentId,principal);
 //        return ResponseEntity.ok().body(ApiResponse.success("Deleted",result));
-//    }
+//   g }
 //
     @SubscribeMapping("/comments.{postId}")
     public List<CommentResponse> getAllComments(@DestinationVariable Integer postId){

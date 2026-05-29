@@ -51,7 +51,21 @@ public class PostController {
         return ResponseEntity.ok().body(ApiResponse.success("Path success",response));
     }
 
+    @GetMapping("/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(@PathVariable Integer postId,Principal principal){
+        log.info(">>>ID: "+postId);
+        PostResponse response = this.postService.getPost(postId,principal);
+        log.info("<<< POST: "+response);
+        return ResponseEntity.ok().body(ApiResponse.success("Get success",response));
+    }
 
-
+    @GetMapping("/myPosts")
+    public ResponseEntity<ApiResponse<Page<PostResponse>>> getMyPosts(Principal principal,
+    @RequestParam(value = "page",defaultValue = "0") int page, @RequestParam(value = "size",defaultValue = "15") int size){
+        log.info(">>>GET MY POSTS");
+        Page<PostResponse> responses = this.postService.getMyPosts(principal,page,size);
+        log.info(">>>PAGE: "+responses);
+        return ResponseEntity.ok(ApiResponse.success("Get Success",responses));
+    }
 
 }
