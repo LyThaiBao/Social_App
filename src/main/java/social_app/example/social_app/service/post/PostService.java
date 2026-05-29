@@ -1,6 +1,7 @@
 package social_app.example.social_app.service.post;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import social_app.example.social_app.dto.post.PostRequest;
 import social_app.example.social_app.dto.post.PostResponse;
 import social_app.example.social_app.entity.Posts;
@@ -17,4 +18,6 @@ public interface PostService {
     void incrementLike(Integer postId);
     void reduceLike(Integer postId);
     Long getTotalLikes(Integer postId);
+    PostResponse getPost(Integer postId,Principal principal);
+    Page<PostResponse> getMyPosts(Principal principal,int pageNum,int pageSize);
 }

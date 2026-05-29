@@ -116,4 +116,35 @@ public class PostServiceImp implements PostService{
     public Long getTotalLikes(Integer postId) {
         return this.postRepository.getTotalLikes(postId);
     }
+
+    @Override
+    public PostResponse getPost(Integer postId,Principal principal) {
+        log.info(">>>Trong service: "+postId);
+        String username = principal.getName();
+        Users user = this.userService.findByUsername(username);
+        Posts post = this.postRepository.getPost(postId,user.getMember().getId()).orElseThrow(()-> new NotFoundResource("You can not see this post"));
+        log.info(">>>LOG: "+post);
+        PostResponse response =  this.postMapper.convertToPostResponse(post);
+        boolean isLike = this.postRepository.isLiked(postId,user.getMember().getId())   ;
+        response.setLiked(isLike);
+        log.info(">>>RESPONSE: "+response);
+        return response;
+    }
+
+    @Override
+    public Page<PostResponse> getMyPosts(Principal principal,int pageNum,int pageSize) {
+        Users user = this.userService.findByUsername(principal.getName());
+        Pageable pageable = PageRequest.of(pageNum,pageSize);
+        log.info(">>>PERSIONAL");
+        Page<Posts> postsPage = this.postRepository.getMyPosts(user.getMember().getId(),pageable);
+        log.info(">>>GMP: "+postsPage);
+        List<Integer> listId = postsPage.getContent().stream().map(Posts::getId).toList();
+        Set<Integer> likedPostIds = this.likeRepository.findLikedPostIds(user.getMember().getId(),listId);
+
+        return postsPage.map(post->{
+            PostResponse response = postMapper.convertToPostResponse(post);
+            response.setLiked(likedPostIds.contains(post.getId()));
+            return response;
+        });
+    }
 }
