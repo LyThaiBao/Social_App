@@ -13,6 +13,7 @@ import java.time.Instant;
 @Builder
 @Data
 public class RefreshToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
