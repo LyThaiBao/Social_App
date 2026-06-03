@@ -61,7 +61,7 @@ public class AuthServiceImp implements AuthService {
             //------------------Take user name to provide for create token-----------
             Users users = this.userService.findByUsername(request.getUsername());
             log.info(">>>USER ID: "+users.getId());
-            long accessExpirationMillis = 1000*60;
+            long accessExpirationMillis = 1000*60*15;
             long refreshExpirationMillis = 24*7*60*60*1000;
             String accessToken = this.jwtUtil.createToken(users.getUsername(),accessExpirationMillis);
             String refreshToken = this.jwtUtil.createToken(users.getUsername(),refreshExpirationMillis);
@@ -106,7 +106,7 @@ public class AuthServiceImp implements AuthService {
         }
        RefreshToken checkRefreshToken = this.tokenService.getRefreshToken(request.getRefreshToken()); // throw not found token exception
         log.info(">>>DB TOKEN: "+checkRefreshToken);
-        long accessExpirationMillis = 1000*60;
+        long accessExpirationMillis = 1000*60*15;
         long refreshExpirationMillis = 24*7*60*60*1000;
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
         String accessToken = this.jwtUtil.createToken(username,accessExpirationMillis);
