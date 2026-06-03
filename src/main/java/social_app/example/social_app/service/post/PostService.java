@@ -19,5 +19,5 @@ public interface PostService {
     void reduceLike(Integer postId);
     Long getTotalLikes(Integer postId);
     PostResponse getPost(Integer postId,Principal principal);
-    Page<PostResponse> getMyPosts(Principal principal,int pageNum,int pageSize);
+    Page<PostResponse> getPersonalPosts(Principal principal,Integer memberId,int pageNum,int pageSize);
 }

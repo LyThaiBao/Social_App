@@ -40,14 +40,13 @@ public class MemberServiceImp implements MemberService {
     }
 
     @Override
-    public Members createMember(Users userSaved, RegisterDTO registerInfo) {
+    public void createMember(Users userSaved, RegisterDTO registerInfo) {
         Members member = Members.builder()
                 .user(userSaved)
                 .birthDay(registerInfo.getBirthDay())
                 .fullName(registerInfo.getFullName())
                 .build();
         this.memberRepository.save(member);
-        return member;
     }
 
     @Override

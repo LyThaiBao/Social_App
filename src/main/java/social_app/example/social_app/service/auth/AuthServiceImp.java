@@ -54,14 +54,14 @@ public class AuthServiceImp implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         try{
-
             //------------------Check user name / Password --------------------------
             Authentication authentication = this.authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
             // returned UserDetails
             //------------------Take user name to provide for create token-----------
             Users users = this.userService.findByUsername(request.getUsername());
-            long accessExpirationMillis = 1000*60*10;
+            log.info(">>>USER ID: "+users.getId());
+            long accessExpirationMillis = 1000*60*15;
             long refreshExpirationMillis = 24*7*60*60*1000;
             String accessToken = this.jwtUtil.createToken(users.getUsername(),accessExpirationMillis);
             String refreshToken = this.jwtUtil.createToken(users.getUsername(),refreshExpirationMillis);
@@ -72,6 +72,7 @@ public class AuthServiceImp implements AuthService {
                     .users(users)
                     .expired(expired)
                     .build();
+            log.info("REFRESH TOKEN: "+refreshTokenSave);
             this.tokenService.save(refreshTokenSave);
             return LoginResponse
                     .builder()
@@ -105,25 +106,24 @@ public class AuthServiceImp implements AuthService {
         }
        RefreshToken checkRefreshToken = this.tokenService.getRefreshToken(request.getRefreshToken()); // throw not found token exception
         log.info(">>>DB TOKEN: "+checkRefreshToken);
-        long accessExpirationMillis = 1000*60*10;
+        long accessExpirationMillis = 1000*60*15;
         long refreshExpirationMillis = 24*7*60*60*1000;
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
         String accessToken = this.jwtUtil.createToken(username,accessExpirationMillis);
         String refreshToken = this.jwtUtil.createToken(username,refreshExpirationMillis);
-        Instant expired = Instant.now().plusMillis(refreshExpirationMillis);
 
-        //-----------Delete old refresh token--------------
-//        this.tokenService.remove(checkRefreshToken);
-        //----------Create and save new Refresh token------
-//        Users user = this.userService.findByUsername(username);
-//        RefreshToken refreshTokenDb = RefreshToken.builder()
-//                .users(user)
-//                .refreshToken(refreshToken)
-//                .expired(expired)
-//                .build();
+        Instant expired = Instant.now().plusMillis(refreshExpirationMillis);
         checkRefreshToken.setRefreshToken(refreshToken);
         checkRefreshToken.setExpired(expired);
-        this.tokenService.save(checkRefreshToken);
+
+        Users user = this.userService.findByUsername(username);
+        RefreshToken newRefreshToken = RefreshToken.builder()
+                .expired(expired)
+                .refreshToken(refreshToken)
+                .users(user)
+                .build();
+
+        this.tokenService.save(newRefreshToken);
         return RefreshTokenResp.builder()
                 .refreshToken(refreshToken)
                 .accessToken(accessToken)

@@ -7,20 +7,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import social_app.example.social_app.dto.friendship.FriendShipDetail;
 import social_app.example.social_app.dto.post.PostRequest;
 import social_app.example.social_app.dto.post.PostResponse;
-import social_app.example.social_app.entity.Likes;
-import social_app.example.social_app.entity.Members;
-import social_app.example.social_app.entity.Posts;
-import social_app.example.social_app.entity.Users;
+import social_app.example.social_app.entity.*;
 import social_app.example.social_app.exception.ForbiddenException;
 import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.mapper.PostMapper;
 import social_app.example.social_app.repo.LikeRepository;
 import social_app.example.social_app.repo.PostRepository;
+import social_app.example.social_app.service.friendship.FriendShipService;
 import social_app.example.social_app.service.like.LikeService;
 import social_app.example.social_app.service.member.MemberService;
 import social_app.example.social_app.service.usr.UserService;
+import social_app.example.social_app.type.FriendShipType;
 
 import java.security.Principal;
 import java.util.List;
@@ -35,6 +35,7 @@ public class PostServiceImp implements PostService{
     private final MemberService memberService;
     private final PostMapper postMapper;
     private final UserService userService;
+    private final FriendShipService friendShipService;
 
     // dirty inject
     private final LikeRepository likeRepository;
@@ -132,12 +133,25 @@ public class PostServiceImp implements PostService{
     }
 
     @Override
-    public Page<PostResponse> getMyPosts(Principal principal,int pageNum,int pageSize) {
+    public Page<PostResponse> getPersonalPosts(Principal principal, Integer memberId,int pageNum,int pageSize) {
         Users user = this.userService.findByUsername(principal.getName());
+        log.info("ID + ID : "+user.getMember().getId()+" "+memberId);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
-        log.info(">>>PERSIONAL");
-        Page<Posts> postsPage = this.postRepository.getMyPosts(user.getMember().getId(),pageable);
-        log.info(">>>GMP: "+postsPage);
+        Page<Posts> postsPage;
+        FriendShipDetail friendShip = this.friendShipService.findBothId(user.getMember().getId(),memberId);
+        if(Objects.equals(user.getMember().getId(),memberId)){
+            log.info("MY POST");
+            postsPage = this.postRepository.getMyPosts(user.getMember().getId(),pageable);
+        }
+        else if(friendShip.getId()!= null && friendShip.getFriendShipType()!= FriendShipType.PENDING){
+            log.info("FRIEND POST");
+            postsPage = this.postRepository.getFriendPosts(memberId,pageable);
+        }
+        else{
+            log.info("Customer post");
+            postsPage = this.postRepository.getPublicPosts(memberId,pageable);
+        }
+
         List<Integer> listId = postsPage.getContent().stream().map(Posts::getId).toList();
         Set<Integer> likedPostIds = this.likeRepository.findLikedPostIds(user.getMember().getId(),listId);
 

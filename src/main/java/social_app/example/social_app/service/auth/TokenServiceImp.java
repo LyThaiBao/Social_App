@@ -1,12 +1,15 @@
 package social_app.example.social_app.service.auth;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.entity.RefreshToken;
 import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.repo.RefreshTokenRepository;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImp implements TokenService{
@@ -22,7 +25,10 @@ public class TokenServiceImp implements TokenService{
     }
 
     @Override
+    @Transactional
     public RefreshToken save(RefreshToken refreshToken) {
+          this.refreshTokenRepository.deleteByUserId(refreshToken.getUsers().getId());
+        log.info(">>>SAVE: ");
         return this.refreshTokenRepository.save(refreshToken);
     }
 
