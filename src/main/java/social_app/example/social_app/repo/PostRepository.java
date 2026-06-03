@@ -52,4 +52,11 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
 
     @Query("select p from Posts p where p.member.id = :memberId order by p.createdAt desc ")
     Page<Posts> getMyPosts(@Param("memberId") Integer memberId,Pageable pageable);
+
+    @Query("select p from Posts p where p.member.id = :memberId and p.status not in('PRIVATE','DELETE')")
+    Page<Posts> getFriendPosts(@Param("memberId") Integer memberId,Pageable pageable);
+
+    @Query("select p from Posts p where p.member.id = :memberId and p.status = 'PUBLIC'")
+    Page<Posts> getPublicPosts(@Param("memberId") Integer memberId,Pageable pageable);
+
 }

@@ -59,11 +59,11 @@ public class PostController {
         return ResponseEntity.ok().body(ApiResponse.success("Get success",response));
     }
 
-    @GetMapping("/myPosts")
+    @GetMapping("/personal")
     public ResponseEntity<ApiResponse<Page<PostResponse>>> getMyPosts(Principal principal,
-    @RequestParam(value = "page",defaultValue = "0") int page, @RequestParam(value = "size",defaultValue = "15") int size){
+    @RequestParam(value = "page",defaultValue = "0") int page, @RequestParam(value = "size",defaultValue = "15") int size,@RequestParam(value = "memberId") Integer memberId){
         log.info(">>>GET MY POSTS");
-        Page<PostResponse> responses = this.postService.getMyPosts(principal,page,size);
+        Page<PostResponse> responses = this.postService.getPersonalPosts(principal,memberId,page,size);
         log.info(">>>PAGE: "+responses);
         return ResponseEntity.ok(ApiResponse.success("Get Success",responses));
     }
