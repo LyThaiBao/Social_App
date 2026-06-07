@@ -35,6 +35,10 @@
         @ToString.Exclude
         private List<Notification> notificationList;
 
+        @OneToMany(mappedBy = "member")
+        @ToString.Exclude
+        private List<Posts> postsList;
+
         @CreationTimestamp
         @Column(name = "create_at",nullable = false)
         private Instant createAt;

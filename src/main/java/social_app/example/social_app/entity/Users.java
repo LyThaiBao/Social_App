@@ -24,7 +24,7 @@ public class Users {
     private String password;
     @Column(name = "enable")
     private boolean enable;
-    @CreationTimestamp
+
     @Column(name = "create_at")
     private Instant createdAt;
 

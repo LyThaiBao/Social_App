@@ -1,6 +1,7 @@
 package social_app.example.social_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +21,7 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/friendship")
+@Slf4j
 public class FriendShipController {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final FriendShipService friendShipService;
@@ -27,7 +29,8 @@ public class FriendShipController {
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('MEMBER')")
     public ResponseEntity<ApiResponse<FriendShipResponse>> sendRequest(@RequestBody FriendShipRequest request,Principal principal){
-        System.out.println(">>> Request: "+request);
+        log.info("SEND >>>");
+        log.info(">>> Request: "+request);
         FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId(),principal);
         //--------------create notification and send to user-------------
         NotificationResponse<?> notificationResponse = this.notificationService.friendRequest(result);
@@ -56,8 +59,7 @@ public class FriendShipController {
 
     @PostMapping("/bothId")
     public ResponseEntity<ApiResponse<FriendShipDetail>> getByBothID(@RequestBody FriendShipRequest request){
-        System.out.println(">>> Request: "+request);
-
+        log.info("BOTH ID: "+request);
         FriendShipDetail friendShipDetail = this.friendShipService.findBothId(request.getAddresserId(), request.getRequesterId());
         return ResponseEntity.ok().body(ApiResponse.success("Get Success",friendShipDetail));
     }

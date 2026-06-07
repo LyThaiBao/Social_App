@@ -6,15 +6,17 @@ import social_app.example.social_app.dto.auth.RegisterDTO;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Users;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
-    public boolean isExist(Integer id);
+    boolean isExist(Integer id);
     Members getMemberById(Integer id);
-    public Optional<Members> getMemberByFullName(String fullName);
-    Members createMember(Users userSaved, RegisterDTO registerInfo);
+    Optional<Members> getMemberByFullName(String fullName);
+    void createMember(Users userSaved, RegisterDTO registerInfo);
     MemberDetailResponse getMemberDetail(Integer id);
     List<MemberResponse> search(String keyword);
+    List<MemberResponse> searchFriend(String keyword, Principal principal);
 
 }

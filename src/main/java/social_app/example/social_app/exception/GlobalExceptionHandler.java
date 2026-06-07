@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<String>> handleRuntime(AuthException authException){
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(authException.getMessage()));
     }
-
+    @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ApiResponse<String>> handleExpiredToken(ExpiredJwtException jwtException){
         return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.error("Token het han hoac khong chinh xac"));
     }
@@ -33,6 +33,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundResource.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFoundResource(NotFoundResource notFoundResource){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(notFoundResource.getMessage()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse<String>> handleForbidden(ForbiddenException forbiddenException){
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.error(forbiddenException.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
