@@ -9,6 +9,7 @@ import social_app.example.social_app.dto.usrAndMember.MemberDetailResponse;
 import social_app.example.social_app.dto.usrAndMember.MemberResponse;
 import social_app.example.social_app.service.member.MemberService;
 
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -30,5 +31,12 @@ public class MemberController {
         log.info("ALO");
         MemberDetailResponse memberDetailResponse = this.memberService.getMemberDetail(id);
         return ResponseEntity.ok().body(ApiResponse.success("Get Success",memberDetailResponse));
+    }
+
+    @GetMapping("/friends/search")
+    public ResponseEntity<ApiResponse<List<MemberResponse>>> searchFriends(@RequestParam String keyword, Principal principal){
+       log.info(">>>LOG: "+keyword);
+        List<MemberResponse> responses = this.memberService.searchFriend(keyword,principal);
+        return ResponseEntity.ok().body(ApiResponse.success("Get success",responses));
     }
 }

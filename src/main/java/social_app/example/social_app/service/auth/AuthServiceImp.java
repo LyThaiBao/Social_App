@@ -37,7 +37,7 @@ public class AuthServiceImp implements AuthService {
     @Transactional
     public UserResponse register(RegisterDTO registerInFo) {
         if(this.userService.isExistName(registerInFo.getUsername())){
-            throw new AuthException("User name was exist");
+            throw new AuthException("User name was exist"); 
         }
         //----Convert user data Map with DB and save
         Users userSaved  =  this.userService.createUser(registerInFo);

@@ -6,6 +6,7 @@ import social_app.example.social_app.dto.auth.RegisterDTO;
 import social_app.example.social_app.entity.Members;
 import social_app.example.social_app.entity.Users;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,6 @@ public interface MemberService {
     void createMember(Users userSaved, RegisterDTO registerInfo);
     MemberDetailResponse getMemberDetail(Integer id);
     List<MemberResponse> search(String keyword);
-
+    List<MemberResponse> searchFriend(String keyword, Principal principal);
 
 }
