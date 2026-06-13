@@ -2,13 +2,15 @@ package social_app.example.social_app.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
 
 @Component
 public class JwtUtil {
-    private  String SECRET_KEY = "lythaibaotimyssfsfjfjsjfksdjfkdsfksdjfkdjfkdsjfksjfwerrerfsdfsdf";
+    @Value("${jwt.secretKey}")
+    private  String SECRET_KEY;
 
     public String createToken(String username,long JwtExpiration){
         return Jwts.builder()

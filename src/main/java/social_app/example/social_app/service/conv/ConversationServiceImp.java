@@ -28,7 +28,7 @@ public class ConversationServiceImp implements ConversationService {
     @Override
     public Conversations createPrivateConversation(Integer currentMemberId,Integer partnerId) {
         Conversations conversation =  Conversations.builder()
-                .conversationName(currentMemberId+"_"+partnerId) // tuong trung --> do getConversation chi lay ten cua partner
+                .conversationName(currentMemberId+"_"+partnerId) // placeholder
                 .type(ConversationType.PRIVATE)
                 .build();
 
@@ -47,10 +47,7 @@ public class ConversationServiceImp implements ConversationService {
     public String resolveConversationName(Conversations conversation, Integer currentMemberId) {
         String conversationName = "";
         if(conversation.getType() == ConversationType.PRIVATE){
-            Participants partner =   conversation.getParticipantsList().stream()
-                    .filter(p->!p.getMember().getId().equals(currentMemberId))
-                    .findFirst().orElse(null);
-            conversationName = partner!=null ? partner.getMember().getFullName() :"Unknow";
+            conversationName = this.participantService.getFullName(conversation.getId(),currentMemberId);
         }
         else{
             conversationName = conversation.getConversationName();
@@ -62,16 +59,9 @@ public class ConversationServiceImp implements ConversationService {
     public ConversationResponse findOrCreatePrivateConversation(Principal principal , Integer partnerId) {
     String username  = principal.getName();
     Users user = this.userService.findByUsername(username);
-     List<Participants> participantsList = this.participantService.getAllParticipant(principal);
-     for (Participants p: participantsList){
-            Conversations cvn = p.getConversation();
-            if(cvn.getType() == ConversationType.PRIVATE){
-              boolean isHasPartner =  cvn.getParticipantsList().stream().anyMatch(pr -> Objects.equals(pr.getMember().getId(), partnerId));
-             if(isHasPartner){
-                 return this.conversationMapper.convertToConversationResponse(cvn);
-             }
-
-            }
+     Conversations conversationEx = this.participantService.isExitsPrivateConv(user.getMember().getId(),partnerId);
+     if(conversationEx != null){
+         return this.conversationMapper.convertToConversationResponse(conversationEx);
      }
      Conversations conversation = this.createPrivateConversation(user.getMember().getId(),partnerId);
      return this.conversationMapper.convertToConversationResponse(conversation);
@@ -82,13 +72,12 @@ public class ConversationServiceImp implements ConversationService {
     public List<ConversationResponse> getConversations(Principal principal) {
         String username = principal.getName();
         Users user = this.userService.findByUsername(username);
-        List<Participants> participantsList = this.participantService.getAllParticipant(principal);
-        return participantsList.stream().map(s->{
-            return ConversationResponse.builder()
-                    .conversationId(s.getConversation().getId())
-                    .type(s.getConversation().getType())
-                    .conversationName(this.resolveConversationName(s.getConversation(),user.getMember().getId()))
-                    .build();
+
+        List<Conversations> conversations =  this.participantService.getConversations(user.getMember().getId());
+        return conversations.stream().map(c ->{
+            String cnvName = this.resolveConversationName(c,user.getMember().getId());
+            c.setConversationName(cnvName);
+            return this.conversationMapper.convertToConversationResponse(c);
         }).toList();
     }
 

@@ -62,4 +62,24 @@ public class ParticipantServiceImp implements ParticipantService {
     public List<Participants> getByConversationId(Integer conversationId) {
         return this.participantRepository.findByConversationId(conversationId);
     }
+
+    @Override
+    public String getDesUsername(Integer cvnId, Integer senderId) {
+        return this.participantRepository.getUsernameFromParticipant(cvnId,senderId);
+    }
+
+    @Override
+    public String getFullName(Integer cvnId, Integer senderId) {
+        return this.participantRepository.getFullNameFromParticipant(cvnId,senderId);
+    }
+
+    @Override
+    public Conversations isExitsPrivateConv(Integer ownerId, Integer partnerId) {
+        return this.participantRepository.isExitsPrivateConv(ownerId,partnerId);
+    }
+
+    @Override
+    public List<Conversations> getConversations(Integer ownerId) {
+        return  this.participantRepository.getConversations(ownerId);
+    }
 }

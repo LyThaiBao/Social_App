@@ -60,7 +60,7 @@ private final NotificationService notificationService;
             // tao thong bao tin nhan moi
             NotificationResponse<?> notificationResponse = this.notificationService.newMessageResponse(messageResponse);
         // Gửi tin nhắn đến người nhận
-        // Đường dẫn: /user/{recipientUsername}/queue/private
+        // /user/{recipientUsername}/queue/private
             this.messagingTemplate.convertAndSendToUser(destinationUser,"/queue/private",messageResponse);
         // Gửi ngược lại cho chính người gửi để cập nhật UI đồng bộ
             this.messagingTemplate.convertAndSendToUser(senderName,"/queue/private",messageResponse);
