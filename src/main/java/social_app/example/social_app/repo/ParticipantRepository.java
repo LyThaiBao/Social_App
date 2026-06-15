@@ -1,6 +1,7 @@
 package social_app.example.social_app.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,10 @@ public interface ParticipantRepository extends JpaRepository<Participants,Intege
     Optional<Participants> findByMemberIdAndConversationId(Integer member_id, Integer conversation_id);
     List<Participants> findByConversationId(Integer conversationId);
     List<Participants> findAllByMemberId(Integer memberId);
+
+    @Modifying
+    @Query("delete from Participants p where p.conversation.id = :cvnId and p.member.id = :memberId")
+    int deleteByMemberIdAndConversationId(@Param("memberId") Integer memberId, @Param("cvnId") Integer cvnId);
 
 //    @Query("select u.id from Users u where u.id = (select m.user.id from Members m where m.id = (select p.member.id from Participants p where p.conversation.id = :cvnId and p.member.id != :senderId))")
     @Query("select p.member.user.username from Participants p where p.conversation.id =:cvnId and p.member.id != :senderId")

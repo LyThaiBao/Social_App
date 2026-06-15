@@ -10,7 +10,7 @@ import java.security.Principal;
 public interface FriendShipService {
      FriendShips createFriendShip(FriendShipType status,Integer addresser, Integer requester);
      boolean isHasPermission(Integer userId);
-     FriendShips findByRequesterIdAndAddresserId(Integer requesterId, Integer AddresserId);
+//     FriendShips findByRequesterIdAndAddresserId(Integer requesterId, Integer AddresserId);
      FriendShipDetail findBothId(Integer AddresserId,Integer requesterId);
      FriendShipResponse sendRequest(Integer requesterId,Integer addresserId,Principal principal);
      FriendShipResponse accept(Integer addresserId,Integer requesterId);

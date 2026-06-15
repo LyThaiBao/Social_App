@@ -1,5 +1,6 @@
 package social_app.example.social_app.service.participant;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.participant.ParticipantResponse;
@@ -38,30 +39,17 @@ public class ParticipantServiceImp implements ParticipantService {
     }
 
     @Override
-    public ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal) {
+    @Transactional
+    public void deleteParticipantById(Integer conversationId, Principal principal) {
         String username = principal.getName();
         Users user = this.userService.findByUsername(username);
-        Participants participant = this.participantRepository.findByMemberIdAndConversationId(user.getMember().getId(),conversationId).orElseThrow(()-> new NotFoundResource("Not found participant"));
-        this.participantRepository.delete(participant);
-        return ParticipantResponse.builder()
-                .memberId(participant.getMember().getId())
-                .conversationId(participant.getConversation().getId())
-                .build();
-
+        int rowDeleted = this.participantRepository.deleteByMemberIdAndConversationId(user.getMember().getId(),conversationId);
+        if(rowDeleted == 0){
+            throw new NotFoundResource("Not found participant");
+        }
     }
 
-    @Override
-    public List<Participants> getAllParticipant(Principal principal) {
-        String username =principal.getName();
-        Users user = this.userService.findByUsername(username);
-        return this.participantRepository.findAllByMemberId(user.getMember().getId());
 
-    }
-
-    @Override
-    public List<Participants> getByConversationId(Integer conversationId) {
-        return this.participantRepository.findByConversationId(conversationId);
-    }
 
     @Override
     public String getDesUsername(Integer cvnId, Integer senderId) {
