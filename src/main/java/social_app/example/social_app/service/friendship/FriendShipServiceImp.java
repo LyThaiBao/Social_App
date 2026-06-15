@@ -54,25 +54,35 @@ public class FriendShipServiceImp implements FriendShipService {
         return currentUser.getId().equals(members.getUser().getId());
     }
 
-//    private FriendShips getFriendShipsSingleWay(Integer requesterId, Integer addresserId) {
-//        return  this.friendShipRepository.findByRequesterIdAndAddresserId(requesterId,addresserId)
-//                .orElse(null);
-//    }
+    private FriendShips getFriendShipsSingleWay(Integer requesterId, Integer addresserId) {
+        return  this.friendShipRepository.findByRequesterIdAndAddresserId(requesterId,addresserId)
+                .orElse(null);
+
+    }
 
 
 
-//    @Override
-//    public FriendShips findByRequesterIdAndAddresserId(Integer requesterId, Integer addresserId) {
-//        return getFriendShipsSingleWay(requesterId, addresserId);
-//    }
+    @Override
+    public FriendShips findByRequesterIdAndAddresserId(Integer requesterId, Integer addresserId) {
+        return getFriendShipsSingleWay(requesterId, addresserId);
+
+    }
 
 
     @Override
     public FriendShipDetail findBothId(Integer addresserId, Integer requesterId) {
-        FriendShips friendShip = this.friendShipRepository.findFriendShip(requesterId,addresserId);
-        if(friendShip != null){
-            return this.friendShipMapper.convertToFriendShipDetail(friendShip);
+        log.info("WTF");
+        FriendShips c1 = this.getFriendShipsSingleWay(requesterId,addresserId);
+        FriendShips c2 = this.getFriendShipsSingleWay(addresserId,requesterId);
+        log.info("C1: "+c1);
+        log.info("C2: "+c2);
+        if(c1 != null){
+            return this.friendShipMapper.convertToFriendShipDetail(c1);
         }
+        if(c2 != null){
+            return this.friendShipMapper.convertToFriendShipDetail(c2);
+        }
+        log.info("LOG LOG >>>");
         return  FriendShipDetail.builder()
                 .friendShipType(null)
                 .id(null)
@@ -85,6 +95,7 @@ public class FriendShipServiceImp implements FriendShipService {
     @Override
     @Transactional
     public FriendShipResponse sendRequest(Integer requesterId, Integer addresserId,Principal principal) {
+        log.info(("HERE"));
         if(!this.isHasPermission(requesterId)){
             throw new SentFriendShipException("You do not have permission");
         }
@@ -112,13 +123,13 @@ public class FriendShipServiceImp implements FriendShipService {
           String username = principal.getName();
           Users user = this.userService.findByUsername(username);
           // in this case we had correct friendship so we just take it 1 way
-            FriendShips friendShip = this.friendShipRepository.findFriendShip(friendShipDetail.getRequesterId(),friendShipDetail.getAddresserId());
+            FriendShips friendShip = this.getFriendShipsSingleWay(friendShipDetail.getRequesterId(),friendShipDetail.getAddresserId());
             // neu ng gui tung la ng nhan thi minh set lai cho dung
           if(Objects.equals(user.getMember().getId(),friendShipDetail.getAddresserId())){
-             Members addresser =  friendShip.getAddresser();
-             Members requester = friendShip.getRequester();
-                friendShip.setRequester(addresser);
-                friendShip.setAddresser(requester);
+             Members addresser =  this.memberService.getMemberById(addresserId);
+             Members requester = this.memberService.getMemberById(requesterId);
+                friendShip.setRequester(requester);
+                friendShip.setAddresser(addresser);
           }
 
           friendShip.setStatus(FriendShipType.PENDING);
@@ -143,7 +154,7 @@ public class FriendShipServiceImp implements FriendShipService {
 
 @Override
 public FriendShipResponse accept(Integer addresserId,Integer requesterId) {
-    FriendShips friendShip = this.friendShipRepository.findFriendShip(requesterId,addresserId);
+    FriendShips friendShip = this.findByRequesterIdAndAddresserId(requesterId,addresserId);
     if(!this.isHasPermission(addresserId)){
         throw new SentFriendShipException("You do not have permission");
     }
@@ -166,7 +177,7 @@ public FriendShipResponse accept(Integer addresserId,Integer requesterId) {
 
 @Override
 public FriendShipResponse denied(Integer addresserId, Integer requesterId) {
-    FriendShips friendShip = this.friendShipRepository.findFriendShip(requesterId,addresserId);
+    FriendShips friendShip = this.findByRequesterIdAndAddresserId(requesterId,addresserId);
     if(!this.isHasPermission(addresserId)){
         throw new SentFriendShipException("You do not have permission");
     }
@@ -185,7 +196,8 @@ public FriendShipResponse denied(Integer addresserId, Integer requesterId) {
 
     @Override
     public FriendShipResponse unFriend(Integer requesterId, Integer addresserId) {
-        FriendShips friendShip =  this.friendShipRepository.findFriendShip(requesterId,addresserId);
+        FriendShipDetail detail = this.findBothId(addresserId,requesterId);
+        FriendShips friendShip =  this.findByRequesterIdAndAddresserId(detail.getRequesterId(),detail.getAddresserId());
         if(friendShip == null){
             throw  new NotFoundResource("Not found friendship");
         }
@@ -206,7 +218,7 @@ public FriendShipResponse denied(Integer addresserId, Integer requesterId) {
             throw new SentFriendShipException("You do not have permission");
         }
 
-        FriendShips friendShip =  this.friendShipRepository.findFriendShip(requesterId,addresserId);
+        FriendShips friendShip =  this.findByRequesterIdAndAddresserId(requesterId,addresserId);
         if(friendShip == null){
             throw  new NotFoundResource("Not found friendship");
         }

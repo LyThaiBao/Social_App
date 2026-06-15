@@ -50,12 +50,28 @@ public class ChatServiceImp implements ChatService {
 
     @Override
     public String getUsernameDest(ChatMessage chatMessage) {
-        return this.participantService.getDesUsername(chatMessage.getConversationId(),chatMessage.getSenderId());
+        Members owner = this.memberService.getMemberById(chatMessage.getSenderId());
+        List<Participants> participants = this.participantService.getByConversationId(chatMessage.getConversationId());
+        List<Participants> participantsOfPartner =  participants.stream().filter(p -> !Objects.equals(p.getMember().getId(),owner.getId())).toList();
+        if(!participantsOfPartner.isEmpty()){
+            Members member = participantsOfPartner.getFirst().getMember();
+            Users user = this.userService.findByUserId(member.getUser().getId());
+            return user.getUsername();
+        }
+        return  null;
     }
 
     @Override
     public String getUsernameDest(RecallMessageRequest recallMessageRequest, Principal principal) {
         Users user = this.userService.findByUsername(principal.getName());
-        return this.participantService.getDesUsername(recallMessageRequest.getConversationId(),user.getMember().getId());
+        Members owner = this.memberService.getMemberById(user.getMember().getId());
+        List<Participants> participants = this.participantService.getByConversationId(recallMessageRequest.getConversationId());
+        List<Participants> participantsOfPartner =  participants.stream().filter(p -> !Objects.equals(p.getMember().getId(),owner.getId())).toList();
+        if(!participantsOfPartner.isEmpty()){
+            Members member = participantsOfPartner.getFirst().getMember();
+            Users partner = this.userService.findByUserId(member.getUser().getId());
+            return partner.getUsername();
+        }
+        return  null;
     }
 }

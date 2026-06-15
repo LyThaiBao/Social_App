@@ -43,13 +43,15 @@ public class PostServiceImp implements PostService{
     public PostResponse createPost(PostRequest request,Principal principal) {
 
         Users user = this.userService.findByUsername(principal.getName());
+        Members member = this.memberService.getMemberById(user.getMember().getId());
         Posts post = Posts.builder()
-                .member(user.getMember())
+                .member(member)
                 .content(request.getContent())
                 .status(request.getStatus())
                 .mediaUrl(request.getMediaUrl())
                 .mediaType(request.getMediaType())
                 .build();
+        log.info(">>>POST: "+post);
         this.postRepository.save(post);
         return this.postMapper.convertToPostResponse(post);
     }
@@ -118,28 +120,35 @@ public class PostServiceImp implements PostService{
 
     @Override
     public PostResponse getPost(Integer postId,Principal principal) {
+        log.info(">>>Trong service: "+postId);
         String username = principal.getName();
         Users user = this.userService.findByUsername(username);
         Posts post = this.postRepository.getPost(postId,user.getMember().getId()).orElseThrow(()-> new NotFoundResource("You can not see this post"));
+        log.info(">>>LOG: "+post);
         PostResponse response =  this.postMapper.convertToPostResponse(post);
         boolean isLike = this.postRepository.isLiked(postId,user.getMember().getId())   ;
         response.setLiked(isLike);
+        log.info(">>>RESPONSE: "+response);
         return response;
     }
 
     @Override
     public Page<PostResponse> getPersonalPosts(Principal principal, Integer memberId,int pageNum,int pageSize) {
         Users user = this.userService.findByUsername(principal.getName());
+        log.info("ID + ID : "+user.getMember().getId()+" "+memberId);
         Pageable pageable = PageRequest.of(pageNum,pageSize);
         Page<Posts> postsPage;
         FriendShipDetail friendShip = this.friendShipService.findBothId(user.getMember().getId(),memberId);
         if(Objects.equals(user.getMember().getId(),memberId)){
+            log.info("MY POST");
             postsPage = this.postRepository.getMyPosts(user.getMember().getId(),pageable);
         }
-        else if(friendShip.getId()!= null && friendShip.getFriendShipType()==FriendShipType.ACCEPTED){
+        else if(friendShip.getId()!= null && friendShip.getFriendShipType()!= FriendShipType.PENDING){
+            log.info("FRIEND POST");
             postsPage = this.postRepository.getFriendPosts(memberId,pageable);
         }
         else{
+            log.info("Customer post");
             postsPage = this.postRepository.getPublicPosts(memberId,pageable);
         }
 

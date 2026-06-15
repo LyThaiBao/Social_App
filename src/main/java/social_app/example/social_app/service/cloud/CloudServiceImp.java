@@ -41,6 +41,7 @@ public class CloudServiceImp implements CloudService {
             );
 
            Map result =  this.cloudinary.uploader().uploadLarge(file.getInputStream(),params); // send input stream instead byte --> when FE abort it'll break stream and throw ex
+            System.out.println("RESULT: "+result);
             return UploadResponse.builder()
                     .mediaUrl(result.get("secure_url").toString())
                     .mediaType(type)

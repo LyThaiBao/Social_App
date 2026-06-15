@@ -28,6 +28,7 @@ public class TokenServiceImp implements TokenService{
     @Transactional
     public RefreshToken save(RefreshToken refreshToken) {
           this.refreshTokenRepository.deleteByUserId(refreshToken.getUsers().getId());
+        log.info(">>>SAVE: ");
         return this.refreshTokenRepository.save(refreshToken);
     }
 

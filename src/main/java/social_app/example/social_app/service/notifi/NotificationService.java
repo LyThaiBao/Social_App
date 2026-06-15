@@ -16,5 +16,5 @@ public interface NotificationService {
     List<NotificationResponse<?>> getNotificationByMemberId(Integer memberId);
     Integer countUnreadNotification(Integer memberId);
     void markRead(Integer memberId);
-    void deleteNotification(Integer id);
+    Notification deleteNotification(Integer id);
 }

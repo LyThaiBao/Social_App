@@ -42,15 +42,9 @@ public class MessageServiceImp implements MessageService {
         // call here for it throw Error and return to client when cvn id null
         Conversations conversation = this.conversationService.getConversationEntityById(conversationId);
         //---------------------------------------------------------------------------------------------
-//        List<Messages> messagesList = this.messageRepository.getMessagesByConversationId(conversationId);
+        List<Messages> messagesList = this.messageRepository.getMessagesByConversationId(conversationId);
 
-            Messages lastMessage = this.messageRepository.getLastMessage(conversationId);
-        if (lastMessage == null) {
-            return LastMessageResponse.builder()
-                    .content("Chưa có tin nhắn nào")
-                    .build();
-        }
-            return this.messageMapper.convertToLastMessageResponse(lastMessage);
+        return this.messageMapper.convertToLastMessageResponse(messagesList.getLast());
     }
 
     @Override

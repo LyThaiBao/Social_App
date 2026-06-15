@@ -47,11 +47,11 @@ public class CommentServiceImp implements CommentService{
     @Transactional
     public String deleteComment(Integer postId,Integer commentId,Principal principal) {
         String currentUsername = principal.getName();
+        Users user = this.userService.findByUsername(currentUsername);
+        Comments comment = this.commentRepository.findById(commentId).orElseThrow(()-> new NotFoundResource("Not found comment"));
         if(currentUsername==null){
             throw new AuthException("You do not have permission");
         }
-        Users user = this.userService.findByUsername(currentUsername);
-        Comments comment = this.commentRepository.findById(commentId).orElseThrow(()-> new NotFoundResource("Not found comment"));
         if(!Objects.equals(comment.getMember().getId(), user.getMember().getId())){
             throw new AuthException("You do not have permission");
         }

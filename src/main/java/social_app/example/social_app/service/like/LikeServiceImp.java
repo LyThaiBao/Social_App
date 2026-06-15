@@ -32,6 +32,7 @@ public class LikeServiceImp implements LikeService{
     public LikeResponse toggleLike(Integer postId, Principal principal) {
         String currentUsername =  principal.getName();
         Users user = this.userService.findByUsername(currentUsername);
+        log.info(">>>>MEMBER: "+user.getMember().getId());
         Posts post = this.postService.getPostEntity(postId);
         Likes like = this.likeRepository.getLikeByMemberIdAndPostId(user.getMember().getId(),postId);
         if(like!=null){
@@ -64,6 +65,31 @@ public class LikeServiceImp implements LikeService{
                 .build();
     }
 
+    @Override
+    public LikeResponse getLikeByMemberIdAndPostId(Integer memberId, Integer postId) {
+        Likes like = this.likeRepository.getLikeByMemberIdAndPostId(memberId,postId);
+        if(like==null){
+            return null;
+        }
+        return this.likeMapper.convertToLikeResponse(like);
+    }
 
+//    @Override
+//    public LikeResponse getLikesOfPost(Integer postId,Principal principal) {
+//        String currentUsername =  principal.getName();
+//        Users user = this.userService.findByUsername(currentUsername);
+//        Likes like = this.likeRepository.getLikeByMemberIdAndPostId(user.getMember().getId(),postId);
+//        Long totalLikes = this.postService.getTotalLikes(postId);
+//        return LikeResponse.builder()
+//                .postId(postId)
+//                .totalLikeOfPost(totalLikes)
+//                .liked(like != null && like.getStatus() == LikeStatus.LIKED)
+//                .build();
+//    }
+
+    // LikeService
+    public Set<Integer> findLikedPostIds(Integer memberId, List<Integer> postIds) {
+        return this.likeRepository.findLikedPostIds(memberId, postIds);
+    }
 
 }

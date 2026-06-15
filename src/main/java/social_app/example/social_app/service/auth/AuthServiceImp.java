@@ -3,7 +3,6 @@ package social_app.example.social_app.service.auth;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -34,21 +33,17 @@ public class AuthServiceImp implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final TokenService  tokenService;
     private final JwtUtil jwtUtil;
-    @Value("#{24*7*60*60*1000}")
-    private Long expiredRefreshToken;
-    @Value("#{1000*60*15}")
-    private Long expiredAccessToken;
     @Override
     @Transactional
     public UserResponse register(RegisterDTO registerInFo) {
         if(this.userService.isExistName(registerInFo.getUsername())){
             throw new AuthException("User name was exist"); 
         }
-        //----save User
+        //----Convert user data Map with DB and save
         Users userSaved  =  this.userService.createUser(registerInFo);
-        //----save member
+        //----Convert member data Map with DB and save
         this.memberService.createMember(userSaved,registerInFo);
-        //----Assign Default Role (Member) for User
+        //----AssignDefaultRole for User
         this.userRoleService.assignDefaultRole(userSaved);
         return UserResponse.builder()
                 .username(userSaved.getUsername())
@@ -59,22 +54,25 @@ public class AuthServiceImp implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         try{
-            //------------------Check user name / Password, if incorrect it will throw Except here--------------------------
+            //------------------Check user name / Password --------------------------
             Authentication authentication = this.authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
             // returned UserDetails
             //------------------Take user name to provide for create token-----------
             Users users = this.userService.findByUsername(request.getUsername());
-
-            String accessToken = this.jwtUtil.createToken(users.getUsername(),this.expiredAccessToken);
-            String refreshToken = this.jwtUtil.createToken(users.getUsername(),this.expiredRefreshToken);
+            log.info(">>>USER ID: "+users.getId());
+            long accessExpirationMillis = 1000*60*15;
+            long refreshExpirationMillis = 24*7*60*60*1000;
+            String accessToken = this.jwtUtil.createToken(users.getUsername(),accessExpirationMillis);
+            String refreshToken = this.jwtUtil.createToken(users.getUsername(),refreshExpirationMillis);
             //----------------Save refresh token to revoke----------
-            Instant expired = Instant.now().plusMillis(this.expiredRefreshToken);
+            Instant expired = Instant.now().plusMillis(refreshExpirationMillis);
             RefreshToken refreshTokenSave = RefreshToken.builder()
                     .refreshToken(refreshToken)
                     .users(users)
                     .expired(expired)
                     .build();
+            log.info("REFRESH TOKEN: "+refreshTokenSave);
             this.tokenService.save(refreshTokenSave);
             return LoginResponse
                     .builder()
@@ -82,7 +80,7 @@ public class AuthServiceImp implements AuthService {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .fullName(users.getMember().getFullName())
-                    .role("member") // auto member, admin just only create direct by DBM
+                    .role("member") // auto member, admin just only create direct by DB
                     .build();
 
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
@@ -92,6 +90,7 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public LogoutResponse logout(String refreshToken) {
+
        RefreshToken refreshTokenDb = this.tokenService.getRefreshToken(refreshToken);
        this.tokenService.remove(refreshTokenDb);
        return LogoutResponse.builder().message("Logout success").build();
@@ -100,16 +99,20 @@ public class AuthServiceImp implements AuthService {
     @Override
     @Transactional
     public RefreshTokenResp refreshToken(RefreshTokenRequ request) {
+        log.info(">>>INPUT TOKEN: "+request.getRefreshToken());
         boolean isValid = this.jwtUtil.isValidateToken(request.getRefreshToken());
         if(!isValid){
             throw new AuthException("Refresh token invalid or expired");
         }
        RefreshToken checkRefreshToken = this.tokenService.getRefreshToken(request.getRefreshToken()); // throw not found token exception
+        log.info(">>>DB TOKEN: "+checkRefreshToken);
+        long accessExpirationMillis = 1000*60*15;
+        long refreshExpirationMillis = 24*7*60*60*1000;
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
-        String accessToken = this.jwtUtil.createToken(username,this.expiredAccessToken);
-        String refreshToken = this.jwtUtil.createToken(username,this.expiredRefreshToken);
+        String accessToken = this.jwtUtil.createToken(username,accessExpirationMillis);
+        String refreshToken = this.jwtUtil.createToken(username,refreshExpirationMillis);
 
-        Instant expired = Instant.now().plusMillis(this.expiredRefreshToken);
+        Instant expired = Instant.now().plusMillis(refreshExpirationMillis);
         checkRefreshToken.setRefreshToken(refreshToken);
         checkRefreshToken.setExpired(expired);
 

@@ -1,6 +1,5 @@
 package social_app.example.social_app.service.participant;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.participant.ParticipantResponse;
@@ -39,35 +38,28 @@ public class ParticipantServiceImp implements ParticipantService {
     }
 
     @Override
-    @Transactional
-    public void deleteParticipantById(Integer conversationId, Principal principal) {
+    public ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal) {
         String username = principal.getName();
         Users user = this.userService.findByUsername(username);
-        int rowDeleted = this.participantRepository.deleteByMemberIdAndConversationId(user.getMember().getId(),conversationId);
-        if(rowDeleted == 0){
-            throw new NotFoundResource("Not found participant");
-        }
-    }
+        Participants participant = this.participantRepository.findByMemberIdAndConversationId(user.getMember().getId(),conversationId).orElseThrow(()-> new NotFoundResource("Not found participant"));
+        this.participantRepository.delete(participant);
+        return ParticipantResponse.builder()
+                .memberId(participant.getMember().getId())
+                .conversationId(participant.getConversation().getId())
+                .build();
 
-
-
-    @Override
-    public String getDesUsername(Integer cvnId, Integer senderId) {
-        return this.participantRepository.getUsernameFromParticipant(cvnId,senderId);
     }
 
     @Override
-    public String getFullName(Integer cvnId, Integer senderId) {
-        return this.participantRepository.getFullNameFromParticipant(cvnId,senderId);
+    public List<Participants> getAllParticipant(Principal principal) {
+        String username =principal.getName();
+        Users user = this.userService.findByUsername(username);
+        return this.participantRepository.findAllByMemberId(user.getMember().getId());
+
     }
 
     @Override
-    public Conversations isExitsPrivateConv(Integer ownerId, Integer partnerId) {
-        return this.participantRepository.isExitsPrivateConv(ownerId,partnerId);
-    }
-
-    @Override
-    public List<Conversations> getConversations(Integer ownerId) {
-        return  this.participantRepository.getConversations(ownerId);
+    public List<Participants> getByConversationId(Integer conversationId) {
+        return this.participantRepository.findByConversationId(conversationId);
     }
 }

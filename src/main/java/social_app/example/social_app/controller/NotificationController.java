@@ -25,11 +25,14 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<List<NotificationResponse<?>>>> getAllNotifications(@RequestBody NotificationRequest request){
+        log.info("ZOO"+request);
         List<NotificationResponse<?>> responseList = this.notificationService.getNotificationByMemberId(request.getMemberId());
+        log.info("DATA: "+responseList);
         return ResponseEntity.ok(ApiResponse.success("Get all success",responseList));
     }
     @PostMapping("/countUnRead")
     public ResponseEntity<ApiResponse<Integer>> getUnReadNotifications(@RequestBody NotificationRequest request){
+        log.info(">>> COUNT: "+request);
       Integer count =  this.notificationService.countUnreadNotification(request.getMemberId());
         return ResponseEntity.ok(ApiResponse.success("Get all success",count));
     }
