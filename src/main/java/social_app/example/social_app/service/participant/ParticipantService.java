@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface ParticipantService {
     ParticipantResponse createParticipant(Integer memberId, Conversations conversation);
-    ParticipantResponse deleteParticipantById(Integer conversationId, Principal principal);
-    List<Participants> getAllParticipant(Principal principal);// truyen principal de tu lay cua no thoi
-    List<Participants> getByConversationId(Integer conversationId);
+    void deleteParticipantById(Integer conversationId, Principal principal);
+    String getDesUsername(Integer cvnId, Integer senderId);
+    String getFullName(Integer cvnId, Integer senderId);
+
+    Conversations isExitsPrivateConv(Integer ownerId,Integer partnerId);
+    List<Conversations> getConversations(Integer ownerId);
 }

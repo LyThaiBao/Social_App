@@ -1,5 +1,6 @@
 package social_app.example.social_app.service.notifi;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -90,33 +91,26 @@ public class NotificationServiceImp implements NotificationService {
     @Override
     public List<NotificationResponse<?>> getNotificationByMemberId(Integer recipientId) {
         List<Notification> responseList = this.notificationRepository.findAllByRecipientId(recipientId).stream().filter(n-> !n.isDeleted()).toList();
-        log.info(">>>RESPON: "+responseList);
         return responseList.stream().map(this.notificationMapper::convertToNotificationResponse).collect(Collectors.toList());
 
     }
 
     @Override
     public Integer countUnreadNotification(Integer recipientId) {
-        List<Notification> responseList = this.notificationRepository.findAllByRecipientId(recipientId).stream().filter(n -> !n.isRead()).toList();
-        return responseList.size();
+        return this.notificationRepository.countUnreadNotification(recipientId);
     }
 
     @Override
+    @Transactional
     public void markRead(Integer recipientId) {
-        List<Notification> responseList = this.notificationRepository.findAllByRecipientId(recipientId).stream().filter(n -> !n.isRead()).toList();
-        responseList.forEach(n ->{
-            n.setRead(true);
-        });
-        this.notificationRepository.saveAll(responseList);
+        this.notificationRepository.markRead(recipientId);
 
     }
 
     @Override
-    public Notification deleteNotification(Integer id) {
-       Notification notification = this.notificationRepository.findById(id).orElseThrow(()->new NotFoundResource("Not found notification"));
-       notification.setDeleted(true);
-       this.notificationRepository.save(notification);
-      return  notification;
+    @Transactional
+    public void deleteNotification(Integer id) {
+         this.notificationRepository.delete(id);
     }
 
 

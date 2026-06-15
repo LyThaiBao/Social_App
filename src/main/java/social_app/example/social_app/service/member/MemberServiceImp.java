@@ -63,10 +63,7 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public List<MemberResponse> search(String keyword) {
-
         List<MemberResponse> memberResponseList = new ArrayList<>() ;
-
-//        String keyClean = keyword.contains("@") ? keyword.substring(1):keyword;
         if(keyword.contains("@")){
             String keyClean =  keyword.substring(1);
             memberResponseList=  this.memberRepository.getByUserUsername(keyClean).stream().map(this.memberMapper::convertToMemberResponse).toList();
@@ -80,7 +77,6 @@ public class MemberServiceImp implements MemberService {
 
     @Override
     public List<MemberResponse> searchFriend(String keyword, Principal principal) {
-        log.info(">>KW: "+keyword);
         String username = principal.getName();
         Users user = this.userService.findByUsername(username);
         List<MemberResponse> memberResponseList = new ArrayList<>() ;
