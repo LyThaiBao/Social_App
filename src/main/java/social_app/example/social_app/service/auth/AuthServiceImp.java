@@ -82,7 +82,7 @@ public class AuthServiceImp implements AuthService {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .fullName(users.getMember().getFullName())
-                    .role("member") // auto member, admin just only create direct by DBM
+                    .role("member") // auto member, admin just only create direct by DBM, [Bug]:if user is admin ?
                     .build();
 
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {
@@ -104,19 +104,19 @@ public class AuthServiceImp implements AuthService {
         if(!isValid){
             throw new AuthException("Refresh token invalid or expired");
         }
-       RefreshToken checkRefreshToken = this.tokenService.getRefreshToken(request.getRefreshToken()); // throw not found token exception
+        RefreshToken checkRefreshToken = this.tokenService.getRefreshToken(request.getRefreshToken()); // throw not found token exception
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
         String accessToken = this.jwtUtil.createToken(username,this.expiredAccessToken);
         String refreshToken = this.jwtUtil.createToken(username,this.expiredRefreshToken);
 
         Instant expired = Instant.now().plusMillis(this.expiredRefreshToken);
-        checkRefreshToken.setRefreshToken(refreshToken);
-        checkRefreshToken.setExpired(expired);
+
 
         Users user = this.userService.findByUsername(username);
         RefreshToken newRefreshToken = RefreshToken.builder()
                 .expired(expired)
                 .refreshToken(refreshToken)
+
                 .users(user)
                 .build();
 
