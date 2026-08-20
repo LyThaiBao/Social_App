@@ -5,11 +5,13 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -32,6 +34,7 @@ public class Users {
     @OneToOne(mappedBy = "user")
     private Members member;
 
-    @OneToMany(mappedBy = "user",fetch =FetchType.EAGER)
-    private List<UserRoles> userRoles;
+    @Builder.Default
+    @OneToMany(mappedBy = "user",fetch =FetchType.LAZY)
+    private List<UserRoles> userRoles = new ArrayList<>();
 }

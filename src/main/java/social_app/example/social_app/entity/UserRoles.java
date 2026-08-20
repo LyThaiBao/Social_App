@@ -6,23 +6,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "user_roles")
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@Builder
-public class UserRoles {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Entity
+    @Table(name = "user_roles")
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Data
+    @Builder
+    public class UserRoles {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "id")
+        private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
+        @ManyToOne
+        @JoinColumn(name = "user_id")
+        private Users user;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Roles role;
-}
+        @ManyToOne
+        @JoinColumn(name = "role_id")
+        private Roles role;
+    }
