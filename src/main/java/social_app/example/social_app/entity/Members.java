@@ -1,21 +1,19 @@
     package social_app.example.social_app.entity;
 
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.*;
     import org.hibernate.annotations.CreationTimestamp;
 
     import java.time.Instant;
     import java.time.LocalDate;
-    import java.util.ArrayList;
     import java.util.List;
 
     @Entity
     @Table(name = "members")
     @NoArgsConstructor
     @AllArgsConstructor
-    @Setter
-    @Getter
-    @Builder
+    @Data @Builder
     public class Members {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,22 +26,20 @@
         @Column(name = "birthday")
         private LocalDate birthDay;
 
-        @OneToOne(fetch = FetchType.LAZY)
+        @OneToOne
         @JoinColumn(name = "user_id",unique = true)
         @ToString.Exclude
         private Users user;
 
-        @Builder.Default
-        @OneToMany(mappedBy = "recipient",fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "recipient")
         @ToString.Exclude
-        private List<Notification> notificationList = new ArrayList<>();
+        private List<Notification> notificationList;
 
-        @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "member")
         @ToString.Exclude
-        @Builder.Default
-        private List<Posts> postsList = new ArrayList<>();
+        private List<Posts> postsList;
 
-        @CreationTimestamp // auto create when create
+        @CreationTimestamp
         @Column(name = "create_at",nullable = false)
         private Instant createAt;
     }

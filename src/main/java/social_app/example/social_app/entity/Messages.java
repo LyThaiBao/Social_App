@@ -1,13 +1,15 @@
 package social_app.example.social_app.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import social_app.example.social_app.type.MediaType;
 import social_app.example.social_app.type.MessageType;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,8 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
+@Data
 public class Messages {
     @Id
     @Column(name = "id")
@@ -28,8 +29,7 @@ public class Messages {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type")
-    @Builder.Default
-    private MessageType type = MessageType.TEXT; // default is type Text
+    private MessageType type = MessageType.TEXT; // default is type File
 
     @Column(name = "mediaUrl")
     private String mediaUrl;
@@ -38,25 +38,24 @@ public class Messages {
     @Enumerated(EnumType.STRING)
     private MediaType mediaType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversations conversation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender")
     private Members sender;
 
 
 
     // case this msg is reply msg
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Messages parentMessage;
 
     //case this msg is root msg
-    @OneToMany(mappedBy = "parentMessage",fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Messages> replyMessages = new ArrayList<>();
+    @OneToMany(mappedBy = "parentMessage")
+    private List<Messages> replyMessages;
 
     @CreationTimestamp
     @Column(name = "created_at" ,nullable = false)
