@@ -2,6 +2,7 @@ package social_app.example.social_app.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import social_app.example.social_app.type.MediaType;
 import social_app.example.social_app.type.PostStatus;
 
@@ -9,7 +10,8 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "posts")
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class Posts {
     private Integer id;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Members member;
 
     @Column(name = "content")
@@ -30,6 +32,7 @@ public class Posts {
     private String mediaUrl;
 
     @Column(name = "media_type")
+    @Enumerated(EnumType.STRING)
     private MediaType mediaType;
 
     @Column(name = "status")
@@ -41,11 +44,7 @@ public class Posts {
     @Builder.Default
     private Long totalLikes = 0L;
 
-    @Column(name = "create_at")
+    @CreationTimestamp
+    @Column(name = "created_at")
     private Instant createdAt;
-
-    @PrePersist
-    protected void onCreate(){
-        this.createdAt = Instant.now();
-    }
 }

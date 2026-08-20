@@ -61,7 +61,7 @@ public class AuthServiceImp implements AuthService {
         try{
             //------------------Check user name / Password, if incorrect it will throw Except here--------------------------
             Authentication authentication = this.authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));// nhan vao principal and cridential
             // returned UserDetails
             //------------------Take user name to provide for create token-----------
             Users users = this.userService.findByUsername(request.getUsername());
@@ -108,7 +108,7 @@ public class AuthServiceImp implements AuthService {
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
         String accessToken = this.jwtUtil.createToken(username,this.expiredAccessToken);
         String refreshToken = this.jwtUtil.createToken(username,this.expiredRefreshToken);
-
+        // vua tao moi vua cap nhat nen xem lai
         Instant expired = Instant.now().plusMillis(this.expiredRefreshToken);
 
 
