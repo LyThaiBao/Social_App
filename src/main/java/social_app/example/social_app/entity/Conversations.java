@@ -2,12 +2,10 @@ package social_app.example.social_app.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import social_app.example.social_app.type.ConversationType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
+@Setter
+@Getter
 public class Conversations {
     @Id
     @Column(name = "id")
@@ -29,10 +28,11 @@ public class Conversations {
     @Column(name = "name")
     private String conversationName;
 
-    @OneToMany(mappedBy = "conversation",fetch = FetchType.EAGER)
-    private List<Participants> participantsList;
+    @Builder.Default
+    @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY)
+    private List<Participants> participantsList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "conversation")
-    private List<Messages> messages;
-
+    @Builder.Default
+    @OneToMany(mappedBy = "conversation",fetch = FetchType.LAZY)
+    private List<Messages> messages = new ArrayList<>();
 }

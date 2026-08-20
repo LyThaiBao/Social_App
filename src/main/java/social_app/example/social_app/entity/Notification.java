@@ -3,12 +3,14 @@ package social_app.example.social_app.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import org.hibernate.annotations.CreationTimestamp;
 import social_app.example.social_app.type.NotificationType;
 import java.time.Instant;
 
 @Entity
 @Table(name = "notifications")
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,10 +51,7 @@ public class Notification {
     private boolean isDeleted;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private Instant createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = Instant.now();
-    }
 }

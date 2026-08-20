@@ -2,16 +2,14 @@ package social_app.example.social_app.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
 @Entity
-@Table(name = "comments")
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,25 +20,23 @@ public class Comments {
     private Integer id;
 
     @JoinColumn(name = "member_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Members member;
 
     @JoinColumn(name = "post_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Posts post;
 
-    @Column(name = "content")
+    @Column(name = "content",columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "is_deleted)")
+    @Column(name = "is_deleted")
+    @Builder.Default
     private boolean isDeleted = false;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
+    @CreationTimestamp
     private Instant createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = Instant.now();
-    }
 
 }

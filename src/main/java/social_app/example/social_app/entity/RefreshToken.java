@@ -3,6 +3,7 @@ package social_app.example.social_app.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -11,7 +12,8 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Setter
+@Getter
 public class RefreshToken {
 
     @Id
@@ -25,8 +27,12 @@ public class RefreshToken {
     @Column(name = "expired")
     private Instant expired;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
     private Users users;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private Instant createdAt;
 }
