@@ -9,9 +9,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import social_app.example.social_app.dto.auth.*;
 import social_app.example.social_app.dto.usrAndMember.UserResponse;
+import social_app.example.social_app.entity.CustomUserDetail;
 import social_app.example.social_app.entity.RefreshToken;
 import social_app.example.social_app.entity.Users;
 import social_app.example.social_app.exception.AuthException;
@@ -62,27 +65,26 @@ public class AuthServiceImp implements AuthService {
             //------------------Check user name / Password, if incorrect it will throw Except here--------------------------
             Authentication authentication = this.authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));// nhan vao principal and cridential
-            // returned UserDetails
             //------------------Take user name to provide for create token-----------
-            Users users = this.userService.findByUsername(request.getUsername());
+            CustomUserDetail userDetail =(CustomUserDetail)authentication.getPrincipal();
 
-            String accessToken = this.jwtUtil.createToken(users.getUsername(),this.expiredAccessToken);
-            String refreshToken = this.jwtUtil.createToken(users.getUsername(),this.expiredRefreshToken);
+            String accessToken = this.jwtUtil.createToken(userDetail.getUsername(),this.expiredAccessToken);
+            String refreshToken = this.jwtUtil.createToken(userDetail.getUsername(),this.expiredRefreshToken);
             //----------------Save refresh token to revoke----------
             Instant expired = Instant.now().plusMillis(this.expiredRefreshToken);
             RefreshToken refreshTokenSave = RefreshToken.builder()
                     .refreshToken(refreshToken)
-                    .users(users)
+                    .users(userDetail.getUser())
                     .expired(expired)
                     .build();
             this.tokenService.save(refreshTokenSave);
             return LoginResponse
                     .builder()
-                    .memberId(users.getMember().getId())
+                    .memberId(userDetail.getUser().getMember().getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .fullName(users.getMember().getFullName())
-                    .role("member") // auto member, admin just only create direct by DBM, [Bug]:if user is admin ?
+                    .fullName(userDetail.getUser().getMember().getFullName())
+                    .roles(userDetail.getRoles())
                     .build();
 
         } catch (BadCredentialsException | InternalAuthenticationServiceException e) {

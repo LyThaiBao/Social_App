@@ -22,7 +22,6 @@ public class UserRoleServiceImp implements UserRoleService {
                 .user(users)
                 .role(role)
                 .build();
-       this.userRoleRepository.save(userRoles);
-       return userRoles;
+        return this.userRoleRepository.save(userRoles);
     }
 }
