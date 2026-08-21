@@ -16,7 +16,7 @@ public class TokenServiceImp implements TokenService{
     private final RefreshTokenRepository refreshTokenRepository;
     @Override
     public RefreshToken getRefreshToken(String refreshToken) {
-        return this.refreshTokenRepository.getRefreshTokenByRefreshToken(refreshToken).orElseThrow(()->new NotFoundResource("Not found refresh token"));
+        return this.refreshTokenRepository.getRefreshToken(refreshToken).orElseThrow(()->new NotFoundResource("Not found refresh token"));
     }
 
     @Override

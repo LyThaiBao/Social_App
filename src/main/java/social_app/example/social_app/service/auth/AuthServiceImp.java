@@ -110,15 +110,14 @@ public class AuthServiceImp implements AuthService {
         String username = this.jwtUtil.extractUsername(request.getRefreshToken());
         String accessToken = this.jwtUtil.createToken(username,this.expiredAccessToken);
         String refreshToken = this.jwtUtil.createToken(username,this.expiredRefreshToken);
-        // vua tao moi vua cap nhat nen xem lai
+
         Instant expired = Instant.now().plusMillis(this.expiredRefreshToken);
 
 
-        Users user = this.userService.findByUsername(username);
+        Users user = checkRefreshToken.getUsers();
         RefreshToken newRefreshToken = RefreshToken.builder()
                 .expired(expired)
                 .refreshToken(refreshToken)
-
                 .users(user)
                 .build();
 
