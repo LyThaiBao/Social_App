@@ -35,7 +35,6 @@ public class UserServiceImp implements UserService {
     public Users createUser(RegisterDTO registerInfo) {
         // should return instance after save to DB
         Users user = this.userMapper.convertToUser(registerInfo);
-        this.userRepository.save(user);
-        return user;
+        return this.userRepository.save(user);
     }
 }

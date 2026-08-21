@@ -2,6 +2,7 @@ package social_app.example.social_app.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ public class JwtUtil {
     @Value("${jwt.secretKey}")
     private  String SECRET_KEY;
 
-    public String createToken(String username,long JwtExpiration){
+    public String createToken(String username, long JwtExpiration){
         return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis()+JwtExpiration))
