@@ -12,7 +12,7 @@ import social_app.example.social_app.dto.usrAndMember.UserResponse;
 import social_app.example.social_app.service.auth.AuthService;
 
 import java.net.URI;
-import java.security.Principal;
+
 
 @Slf4j
 @RestController

@@ -14,6 +14,7 @@ public class ApiResponse <T>{
     private boolean isSuccess;
     private T body;
 
+    //   T ở đây là khai bao sẽ sử dụng T --------T ở đây đc truyên vào sẽ infer ra type cho T ở trc
     public static <T> ApiResponse<T> success(String message,T data){
         return ApiResponse.<T>builder()
                 .isSuccess(true)
