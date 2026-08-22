@@ -1,33 +1,33 @@
 package social_app.example.social_app.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
 @Entity
-@Table(name = "participants",indexes = {@Index(name = "idx_conversation_member",columnList = "conversation_id, member_id",unique = true)})
+@Table(name = "participants")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Setter
-@Getter
+@Data
 public class Participants {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Members member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversations conversation;
 
     @Column(name = "created_at")
-    @CreationTimestamp
     private Instant createdAt;
 }

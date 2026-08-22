@@ -42,6 +42,7 @@ public class PostServiceImp implements PostService{
     private final LikeRepository likeRepository;
     @Override
     public PostResponse createPost(PostRequest request,Principal principal) {
+
         Users user = this.userService.findByUsername(principal.getName());
         Posts post = Posts.builder()
                 .member(user.getMember())

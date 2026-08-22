@@ -9,8 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name="friend_ships",indexes = {@Index(name = "idx_requester_addresser",columnList = "requester_id,addresser_id",unique = true)})
-@Setter
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,20 +19,19 @@ public class FriendShips {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "requester_id")
     private Members requester;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "addresser_id")
     private Members addresser;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status",length = 15,nullable = false)
-    @Builder.Default
-    private FriendShipType status = FriendShipType.PENDING;
+    private FriendShipType status;
 
     @CreationTimestamp // auto generate
-    @Column(name = "created_at",nullable = false)
-    private Instant createdAt;
+    @Column(name = "create_at",nullable = false)
+    private Instant createAt;
 }
