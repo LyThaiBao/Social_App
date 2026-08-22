@@ -46,8 +46,8 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<PostResponse>> modifyPost(@PathVariable Integer id,@RequestBody PostRequest request){
-        PostResponse response = this.postService.modifyPost(id,request);
+    public ResponseEntity<ApiResponse<PostResponse>> modifyPost(@PathVariable Integer id,@RequestBody PostRequest request,Principal principal){
+        PostResponse response = this.postService.modifyPost(id,request,principal);
         return ResponseEntity.ok().body(ApiResponse.success("Path success",response));
     }
 
