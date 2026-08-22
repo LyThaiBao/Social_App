@@ -13,7 +13,7 @@ public interface PostService {
     PostResponse createPost(PostRequest request,Principal principal);
     Page<PostResponse> getNewPosts(Principal principal, int pageNum, int size);
     void deletePost(Integer id,Principal principal);
-    PostResponse modifyPost(Integer id,PostRequest request);
+    PostResponse modifyPost(Integer id,PostRequest request,Principal principal);
     Posts getPostEntity(Integer id);
     void incrementLike(Integer postId);
     void reduceLike(Integer postId);

@@ -45,14 +45,14 @@ public class ConversationServiceImp implements ConversationService {
     }
     @Override
     public String resolveConversationName(Conversations conversation, Integer currentMemberId) {
-        String conversationName = "";
+        StringBuilder conversationName;
         if(conversation.getType() == ConversationType.PRIVATE){
-            conversationName = this.participantService.getFullName(conversation.getId(),currentMemberId);
+            conversationName = new StringBuilder(this.participantService.getFullName(conversation.getId(),currentMemberId));
         }
         else{
-            conversationName = conversation.getConversationName();
+            conversationName = new StringBuilder(conversation.getConversationName());
         }
-        return conversationName;
+        return conversationName.toString();
     }
 
     @Override

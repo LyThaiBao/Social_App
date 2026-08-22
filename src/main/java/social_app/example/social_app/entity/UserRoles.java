@@ -22,7 +22,7 @@ public class UserRoles {
     @JoinColumn(name = "user_id")
     private Users user;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Roles role;
-}
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "role_id")
+        private Roles role;
+    }

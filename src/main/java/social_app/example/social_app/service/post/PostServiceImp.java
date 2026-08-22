@@ -11,6 +11,7 @@ import social_app.example.social_app.dto.friendship.FriendShipDetail;
 import social_app.example.social_app.dto.post.PostRequest;
 import social_app.example.social_app.dto.post.PostResponse;
 import social_app.example.social_app.entity.*;
+import social_app.example.social_app.exception.AuthException;
 import social_app.example.social_app.exception.ForbiddenException;
 import social_app.example.social_app.exception.NotFoundResource;
 import social_app.example.social_app.mapper.PostMapper;
@@ -82,8 +83,12 @@ public class PostServiceImp implements PostService{
 
     @Override
     @Transactional
-    public PostResponse modifyPost(Integer id,PostRequest request) {
+    public PostResponse modifyPost(Integer id,PostRequest request,Principal principal) {
         Posts post = this.postRepository.findById(id).orElseThrow(() -> new NotFoundResource("Not found post with id "+id));
+        String username = principal.getName();
+        if(!username.equals(post.getMember().getUser().getUsername())){
+            throw new AuthException("You do not have permission");
+        }
         if(request.getContent()!=null){
             post.setContent(request.getContent());
         }
@@ -136,7 +141,7 @@ public class PostServiceImp implements PostService{
         if(Objects.equals(user.getMember().getId(),memberId)){
             postsPage = this.postRepository.getMyPosts(user.getMember().getId(),pageable);
         }
-        else if(friendShip.getId()!= null && friendShip.getFriendShipType()==FriendShipType.ACCEPTED){
+        else if(friendShip!= null && friendShip.getFriendShipType()==FriendShipType.ACCEPTED){
             postsPage = this.postRepository.getFriendPosts(memberId,pageable);
         }
         else{

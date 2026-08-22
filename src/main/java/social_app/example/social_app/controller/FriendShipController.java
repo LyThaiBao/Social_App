@@ -29,8 +29,6 @@ public class FriendShipController {
     @PostMapping("/send")
     @PreAuthorize("hasAnyRole('MEMBER')")
     public ResponseEntity<ApiResponse<FriendShipResponse>> sendRequest(@RequestBody FriendShipRequest request,Principal principal){
-        log.info("SEND >>>");
-        log.info(">>> Request: "+request);
         FriendShipResponse result = this.friendShipService.sendRequest(request.getRequesterId(),request.getAddresserId(),principal);
         //--------------create notification and send to user-------------
         NotificationResponse<?> notificationResponse = this.notificationService.friendRequest(result);

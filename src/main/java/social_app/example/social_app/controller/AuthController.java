@@ -12,7 +12,7 @@ import social_app.example.social_app.dto.usrAndMember.UserResponse;
 import social_app.example.social_app.service.auth.AuthService;
 
 import java.net.URI;
-import java.security.Principal;
+
 
 @Slf4j
 @RestController
@@ -34,8 +34,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest){
-        log.info(">>>LOGIN: "+loginRequest);
+//        log.info(">>>LOGIN: "+loginRequest);
         LoginResponse response = this.authService.login(loginRequest);
+//        log.info(">>>Response: "+response);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Login Success",response));
     }
 

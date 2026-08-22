@@ -11,7 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken,Integer> {
-    Optional<RefreshToken> getRefreshTokenByRefreshToken(String refreshToken);
+    @Query("select r from RefreshToken r join fetch r.users where r.refreshToken =:refreshToken")
+    Optional<RefreshToken> getRefreshToken(@Param("refreshToken") String refreshToken);
 
     Optional<RefreshToken> getRefreshTokenByUsersId(Integer usersId);
 

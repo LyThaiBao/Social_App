@@ -73,16 +73,9 @@ public class Security {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        // Set tất cả nguồn gốc được phép
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-
-        // Set tất cả phương thức
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-
-        // Set tất cả header
         configuration.setAllowedHeaders(Arrays.asList("*"));
-
         // Cho phép gửi credential (cookies, auth headers)
         configuration.setAllowCredentials(true);
 

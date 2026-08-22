@@ -34,7 +34,6 @@ public class UserServiceImp implements UserService {
     @Override
     public Users createUser(RegisterDTO registerInfo) {
         Users user = this.userMapper.convertToUser(registerInfo);
-        this.userRepository.save(user);
-        return user;
+        return this.userRepository.save(user);
     }
 }

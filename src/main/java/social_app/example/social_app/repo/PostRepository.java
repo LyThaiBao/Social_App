@@ -39,6 +39,10 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
     @Query("update Posts  p set p.totalLikes=(p.totalLikes-1) where p.id = :postId")
     void reduceLike(@Param("postId") Integer postId);
 
+    @Override
+    @Query("select p from Posts p join fetch p.member where p.id =:id")
+    Optional<Posts> findById(@Param("id") Integer id);
+
     @Query("select p from Posts p where p.id = :postId " +
             "and p.status != 'PRIVATE' " +
             "and (p.status = 'PUBLIC' or " +
@@ -50,7 +54,7 @@ public interface PostRepository extends JpaRepository<Posts,Integer>{
     @Query("select count(l) > 0 from Likes l where l.member.id = :userId and l.post.id = :postId")
     boolean isLiked(@Param("postId") Integer postId, @Param("userId") Integer userId);
 
-    @Query("select p from Posts p where p.member.id = :memberId order by p.createdAt desc ")
+    @Query("select p from Posts p where p.member.id = :memberId and p.status != 'DELETE' order by p.createdAt desc ")
     Page<Posts> getMyPosts(@Param("memberId") Integer memberId,Pageable pageable);
 
     @Query("select p from Posts p where p.member.id = :memberId and p.status not in('PRIVATE','DELETE')")
