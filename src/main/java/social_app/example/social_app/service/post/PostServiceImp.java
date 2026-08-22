@@ -140,7 +140,7 @@ public class PostServiceImp implements PostService{
         if(Objects.equals(user.getMember().getId(),memberId)){
             postsPage = this.postRepository.getMyPosts(user.getMember().getId(),pageable);
         }
-        else if(friendShip.getId()!= null && friendShip.getFriendShipType()==FriendShipType.ACCEPTED){
+        else if(friendShip!= null && friendShip.getFriendShipType()==FriendShipType.ACCEPTED){
             postsPage = this.postRepository.getFriendPosts(memberId,pageable);
         }
         else{
