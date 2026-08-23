@@ -29,7 +29,7 @@ This is the **Backend API** for **Social Connect** — a social networking app t
 | **Language** | Java 21 |
 | **Framework** | Spring Boot 4.0.2 |
 | **Database** | MySQL (Spring Data JPA) |
-| **Security** | Spring Security, JWT (`jjwt` 0.11.5) |
+| **Security** | Spring Security, JWT (`jjwt` 0.13.0) |
 | **Real-time** | Spring WebSocket + STOMP messaging |
 | **Media Storage** | Cloudinary |
 | **Tools** | Git, GitHub, Docker (containerized MySQL), Lombok |
