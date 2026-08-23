@@ -51,7 +51,7 @@ This is the **Backend API** for **Social Connect** — a social networking app t
 
 
 ## 🏛️ Architecture Flow
-![Architecture flow: Controller → Service → Repository → Database, with DTO mapping on the response](docs/architecture-flow.png)
+![Architecture flow: Controller → Service → Repository → Database, with DTO mapping on the response](docs/architecture_flow.png)
 
 A request flows down through the layers — **Controller** receives it, **Service** runs the business logic, **Repository** reads from the **Database**. On the way back, the **Service** layer maps the raw database entity into a **DTO** before it's returned through the Controller to the client, so internal entities are never exposed directly in the API response.
 
